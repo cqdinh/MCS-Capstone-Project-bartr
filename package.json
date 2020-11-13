@@ -1,0 +1,24 @@
+{
+  "name": "mcs-capstone-project-bartr",
+  "version": "1.0.0",
+  "description": "Capstone Project",
+  "main": "server.js",
+  "scripts": {
+    "test": "npm start"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/cqdinh/MCS-Capstone-Project-bartr.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/cqdinh/MCS-Capstone-Project-bartr/issues"
+  },
+  "homepage": "https://github.com/cqdinh/MCS-Capstone-Project-bartr#readme",
+  "dependencies": {
+    "cors": "^2.8.5",
+    "express": "^4.17.1",
+    "mongoose": "^5.10.13"
+  }
+}
