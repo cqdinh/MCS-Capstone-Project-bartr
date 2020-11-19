@@ -5,10 +5,15 @@ const mongoose = require('mongoose');
 let User = require('./models/user.model')
 let Item = require('./models/item.model')
 let Trade = require('./models/trade.model');
-const { assert } = require('console');
 
 var app = express()
 port = 8080
+
+function assert(value, message){
+    if (!value){
+        throw message
+    }
+}
 
 
 /*
@@ -64,16 +69,26 @@ app.post('/users/add', (req, res) => {
 
 // Get Items listed by a user
 app.get('/users/items', (req, res) => {
-    Item.find({user_id: mongoose.Types.ObjectId(req.query.id)}).then(
-        items => {
-            console.log(req.query.id)
-            res.json(items);
+    User.findById(req.query.id, {items: 1}).then(
+        user => {
+            res.json(user.items);
         }
     ).catch(err => res.status(400).json('Error: ' + err));;
 })
 
 
 // Get users near a specified point
+/* 
+Input Format: {
+    longitude: Point longitude
+    latitude: Point latitude
+    distance_km: Radius within which to select users
+}
+
+Output Format:
+[user_id_1, user_id_2, ...]
+
+*/
 app.get('/users/nearby', (req, res) => {
     User.find({
         location: {
@@ -95,20 +110,50 @@ app.get('/users/nearby', (req, res) => {
 })
 
 // Get Trades associated with a user
-app.get('/users/trades', (req, res) => {
-    Trade.find({
-        $or: [
-            {user1_id: mongoose.Types.ObjectId(req.query.id)},
-            {user2_id: mongoose.Types.ObjectId(req.query.id)}
-        ]}).then(
-            trades => {
-                res.json(trades);
+/* 
+Input Format: {
+    id: id of the user to search for
+}
+
+Output Format:
+[trade_id_1, trade_id_2, ...]
+
+*/
+app.get('/users/trades/current', (req, res) => {
+    User.findById(req.query.id, {curr_trades: 1}).then(
+            user => {
+                res.json(user.curr_trades);
+        }
+    ).catch(err => res.status(400).json('Error: ' + err));;
+})
+
+/* 
+Input Format: {
+    id: id of the user to search for
+}
+
+Output Format:
+[trade_id_1, trade_id_2, ...]
+
+*/
+app.get('/users/trades/past', (req, res) => {
+    User.findById(req.query.id, {past_trades: 1}).then(
+            user => {
+                res.json(user.past_trades);
         }
     ).catch(err => res.status(400).json('Error: ' + err));;
 })
 
 // Start a trade between two users
-app.get('/trades/start', async (req, res) => {
+/* 
+Input Format: {
+    initiator_id: id of the user making the initial offer
+    recipient_id: id of the user that the offer is made to
+    initiator_items: array of the items belonging to the initiator
+    recipient_items: array of the items belonging to the recipient
+}
+*/
+app.post('/trades/start', async (req, res) => {
     const session = await conn.startSession()
 
     console.log("Query:", req.query)
@@ -126,22 +171,20 @@ app.get('/trades/start', async (req, res) => {
             user2_items: req.query.recipient_items
         }], {session: session})
 
-        assert(trade)
+        assert(trade.length != 0, "Trade Not Created")
         trade = trade[0]
-
-        assert(trade)
 
         const initiator = await User.findByIdAndUpdate(mongoose.Types.ObjectId(req.query.initiator_id), {
             $push: {curr_trades: trade._id}
         }, {session: session})
 
-        assert(initiator)
+        assert(initiator != null, "Initiator Not Found")
 
         const recipient = await User.findByIdAndUpdate(mongoose.Types.ObjectId(req.query.recipient_id), {
             $push: {curr_trades: trade._id}
         }, {session: session})
 
-        assert(recipient)
+        assert(recipient != null, "Recipient Not Found")
 
         await session.commitTransaction()
         session.endSession()
@@ -160,7 +203,7 @@ app.get('/trades/start', async (req, res) => {
 app.post('/items/add', async (req, res) => {
     const session = await conn.startSession()
 
-    console.log("Query:", req.query)
+    console.log("Adding New Item:", req.query)
     
     session.startTransaction()
 
@@ -172,17 +215,15 @@ app.post('/items/add', async (req, res) => {
             status: "private"
         }], {session: session})
 
-        assert(item)
+        assert(item.length != 0, "Item Not Created")
 
         item = item[0];
-
-        assert(item)
 
         const user = await User.findByIdAndUpdate(mongoose.Types.ObjectId(req.query.user_id), {
             $push: {items: item._id}
         }, {session: session})
 
-        assert(user)
+        assert(user != null, "User Not Found")
 
         await session.commitTransaction()
         session.endSession()
@@ -190,6 +231,7 @@ app.post('/items/add', async (req, res) => {
         res.json("Item Created")
 
     } catch (err) {
+        console.log(err)
         await session.abortTransaction()
         session.endSession()
         res.status(400).json("Error: " + err)
@@ -207,24 +249,116 @@ app.post('/items/images/add', (req, res) => {
 
 // Remove image from an item by index
 app.post('/items/images/remove', async (req, res) => {
+    const session = await conn.startSession()
+
+    console.log("Adding New Item:", req.query)
+    
+    session.startTransaction()
+
     try {
         var index_str = "images." + req.query.index
         var item = await Item.findByIdAndUpdate(req.query.id, {
             $unset: {index_str: 1}
-        })
+        }, {session: session})
 
-        assert(item)
+        assert(item != null, "Item Not Found")
 
         item = await Item.findByIdAndUpdate(req.query.id, {
             $pull: {index: null}
-        })
+        }, {session: session})
 
-        assert(item)
+        assert(item != null, "Item Not Found")
+
+        await session.commitTransaction()
+        session.endSession()
+
+        res.json("Image Removed")
     }
     catch (err){
-        res.status(400).json('Error: ' + err)
+
+        await session.abortTransaction()
+        session.endSession()
+        res.status(400).json("Error: " + err)
     }
 })
+
+// Get trades by id
+/* 
+Input Format: {
+    0: id_0 - Id of the first trade to retrieve
+    1: id_1 - Id of the second trade to retrieve
+    ...
+}
+
+Output Format:
+Array of trade documents in the order the ids were given
+[trade_1, trade_2, ...]
+
+*/
+app.get('/trades', (req, res) => {
+    console.log(req.query)
+
+    var id_arr = []
+    var id_map = {}
+    var id;
+    for(var i = 0; i < Object.keys(req.query).length; i++){
+        id = req.query[String(i)];
+        id_arr.push(id)
+        id_map[id] = i
+    }
+    
+    Trade.find({_id: {$in: id_arr}}).then(
+            trades => {
+                var ordered = id_arr.map(id => null)
+                
+                trades.map((trade) => {
+                    ordered[id_map[trade._id]] = trade
+                })
+
+                res.json(ordered);
+        }
+    ).catch(err => res.status(400).json('Error: ' + err));;
+})
+
+// Get items by id
+/* 
+Input Format: {
+    0: id_0 - Id of the first item to retrieve
+    1: id_1 - Id of the second item to retrieve
+    ...
+}
+
+Output Format:
+Array of item documents in the order the ids were given
+[item_1, item_2, ...]
+
+*/
+app.get('/items', (req, res) => {
+    console.log(req.query)
+
+    var id_arr = []
+    var id_map = {}
+    var id;
+    for(var i = 0; i < Object.keys(req.query).length; i++){
+        id = req.query[String(i)];
+        id_arr.push(id)
+        id_map[id] = i
+    }
+    
+    Item.find({_id: {$in: id_arr}}).then(
+            items => {
+                var ordered = id_arr.map(id => null)
+                
+                items.map((item) => {
+                    ordered[id_map[item._id]] = item
+                })
+
+                res.json(ordered);
+        }
+    ).catch(err => res.status(400).json('Error: ' + err));;
+})
+
+
 
 var server = app.listen(port, function(){
     console.log("Expres server listening on port", server.address().port)
