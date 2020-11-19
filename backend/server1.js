@@ -30,6 +30,8 @@ var db_name = "capstone_db"
 
 var uri = "mongodb+srv://" + username + ":" + password + "@capstonecluster.vrc3f.mongodb.net/" + db_name + "?retryWrites=true&w=majority"
 
+console.log(uri);
+
 //var client = mongo.MongoClient(uri, { useUnifiedTopology: true });
 
 mongoose.connect(uri, 

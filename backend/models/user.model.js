@@ -29,10 +29,14 @@ const userSchema = new mongoose.Schema({
         type: String,
         required: true
     },
-    /*pass_hash: {
+    password: {
         type: String,
         required: true
-    },*/
+    },
+    date: {
+        type: Date,
+        default: Date.now,
+    },
     items: [mongoose.ObjectId],
     curr_trades: [mongoose.ObjectId],
     past_trades: [mongoose.ObjectId]
