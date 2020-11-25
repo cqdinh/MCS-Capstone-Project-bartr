@@ -5,8 +5,15 @@ const router = express.Router();
 const User = require("../models/user.model");
 const Item = require("../models/item.model");
 
+// Get mongodb connection
+const mongoose = require("mongoose");
+const conn = mongoose.connection;
+
+// Get assertion functions
 const utils = require("../utils")
-const assert = utils.assert;
+const assertTrue = utils.assertTrue;
+const assertFalse = utils.assertFalse;
+
 
 // Get items by id
 /* 
@@ -46,6 +53,42 @@ router.get('/get', (req, res) => {
     ).catch(err => res.status(400).json('Error: ' + err));;
 })
 
+// Get a single item by id
+/* 
+Input Format: {
+    id: Id of the item to retrieve
+}
+
+Output Format:
+Item document
+
+*/
+router.get('/get_one', (req, res) => {
+    console.log(req.query)
+
+    var id_arr = []
+    var id_map = {}
+    var id;
+    for(var i = 0; i < Object.keys(req.query).length; i++){
+        id = req.query[String(i)];
+        id_arr.push(id)
+        id_map[id] = i
+    }
+    
+    Item.find({_id: {$in: id_arr}}).then(
+            items => {
+                var ordered = id_arr.map(id => null)
+                
+                items.map((item) => {
+                    ordered[id_map[item._id]] = item
+                })
+
+                res.json(ordered);
+        }
+    ).catch(err => res.status(400).json('Error: ' + err));;
+})
+
+
 // @route POST api/items/updateItem
 // @desc updateItem Item
 // @access Public
@@ -77,7 +120,7 @@ router.post('/add', async (req, res) => {
             status: "private"
         }], {session: session})
 
-        assert(item.length != 0, "Item Not Created")
+        assertFalse(item.length == 0, "Item Not Created")
 
         item = item[0];
 
@@ -85,7 +128,7 @@ router.post('/add', async (req, res) => {
             $push: {items: item._id}
         }, {session: session})
 
-        assert(user != null, "User Not Found")
+        assertFalse(user == null, "User Not Found")
 
         await session.commitTransaction()
         session.endSession()
@@ -123,13 +166,13 @@ router.post('/remove_image', async (req, res) => {
             $unset: {index_str: 1}
         }, {session: session})
 
-        assert(item != null, "Item Not Found")
+        assertFalse(item == null, "Item Not Found")
 
         item = await Item.findByIdAndUpdate(req.query.id, {
             $pull: {index: null}
         }, {session: session})
 
-        assert(item != null, "Item Not Found")
+        assertFalse(item == null, "Item Not Found")
 
         await session.commitTransaction()
         session.endSession()

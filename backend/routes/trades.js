@@ -5,6 +5,10 @@ const router = express.Router();
 const User = require("../models/user.model");
 const Trade = require("../models/trade.model");
 
+// Get mongodb connection
+const mongoose = require("mongoose");
+const conn = mongoose.connection;
+
 const utils = require("../utils")
 const assert = utils.assert;
 
@@ -74,20 +78,20 @@ router.post('/start', async (req, res) => {
             user2_items: req.query.recipient_items
         }], {session: session})
 
-        assert(trade.length != 0, "Trade Not Created")
+        assertFalse(trade.length == 0, "Trade Not Created")
         trade = trade[0]
 
         const initiator = await User.findByIdAndUpdate(mongoose.Types.ObjectId(req.query.initiator_id), {
             $push: {curr_trades: trade._id}
         }, {session: session})
 
-        assert(initiator != null, "Initiator Not Found")
+        assertFalse(initiator == null, "Initiator Not Found")
 
         const recipient = await User.findByIdAndUpdate(mongoose.Types.ObjectId(req.query.recipient_id), {
             $push: {curr_trades: trade._id}
         }, {session: session})
 
-        assert(recipient != null, "Recipient Not Found")
+        assertFalse(recipient == null, "Recipient Not Found")
 
         await session.commitTransaction()
         session.endSession()

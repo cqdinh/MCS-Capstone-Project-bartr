@@ -10,8 +10,16 @@ const validateLoginInput = require("../validation/login");
 // Load User model
 const User = require("../models/user.model");
 
+// Get mongodb connection
+const mongoose = require("mongoose");
+const conn = mongoose.connection;
+
+// Get assertion functions
 const utils = require("../utils")
-const assert = utils.assert;
+const assertTrue = utils.assertTrue;
+const assertFalse = utils.assertFalse;
+
+
 
 // @route POST api/users/register
 // @desc Register user
@@ -105,6 +113,14 @@ router.post("/login", (req, res) => {
   });
 });
 
+// Get name of a user
+router.get('/name', (req, res) => {
+    User.findById(req.query.id, {display_name: 1}).then(
+        user => {
+            res.json(user.display_name);
+        }
+    ).catch(err => res.status(400).json('Error: ' + err));;
+})
 
 // Get Items listed by a user
 router.get('/items', (req, res) => {
