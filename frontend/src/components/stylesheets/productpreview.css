@@ -1,0 +1,16 @@
+.product-preview-page {
+    background-color: #f2f2f2;
+    height: 85vh;
+}
+
+.product-images {
+    border-right: 1px solid black;
+}
+
+.product-desc p, h3 {
+    padding-left: 15px;
+}
+
+.product-desc {
+    margin-top: 20px;
+}

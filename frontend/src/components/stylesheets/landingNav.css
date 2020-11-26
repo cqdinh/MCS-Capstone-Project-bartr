@@ -1,0 +1,24 @@
+@import url('https://fonts.googleapis.com/css2?family=Pacifico&display=swap');
+
+.navigation-bar {    
+    background-color: #65ccb8;
+    border-bottom: 1px solid transparent;    
+}
+
+.navigation-bar-logo {    
+    margin-left: 10%;    
+}
+
+.navtop-link a {
+    color: #182628;
+    text-decoration: none;
+    font-size: 22px;
+    font-weight: bold;
+    padding: 0 5px;
+}
+
+.navtop-link a:hover {
+    color: #f2f2f2;
+    text-decoration: none;
+}
+

@@ -1,0 +1,53 @@
+.landing-page {
+    background-color: #f2f2f2;
+}
+
+.landing-image {
+    text-align: center;
+    margin-top: 2%;
+    margin-bottom: 2%;
+}
+
+.image {
+    border-radius: 10px;
+}
+
+.landing-page-text {
+    margin: 0 5%;
+    color:#182628;
+}
+
+.text-desc {
+    margin: 10px 0;
+}
+
+.text-desc h3 {
+    font-weight: bold;
+    font-size: 32px;
+    color:#05386b;
+}
+
+.text-desc p {
+    padding: 10px 20px;
+    font-size: 22px;
+}
+
+.text-hiw h3 {
+    font-weight: bold;
+    font-size: 32px;
+    color: #05386b;
+}
+
+.text-hiw p {
+    padding: 10px 0;
+    font-size: 22px;
+    margin-bottom: 0;
+    margin-left: 20px;
+}
+
+@media only screen and (max-width: 576px) {
+    .image {
+        max-height: 40%;
+        width: 100%;
+    }
+}
