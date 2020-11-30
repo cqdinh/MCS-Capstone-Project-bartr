@@ -9,6 +9,18 @@ import Container from 'react-bootstrap/Container'
 import Form from 'react-bootstrap/Form'
 import ImageUploader from 'react-images-upload';
 
+import API from '../../api'
+
+function createItem(name, value, user_id, description, image_link){
+    return API.post('items/add', {
+        name: name,
+        value: value,
+        user_id: user_id,
+        description: description,
+        image_link: image_link
+    });
+}
+
 export class AddItem extends Component {
     constructor(props) {
         super(props);

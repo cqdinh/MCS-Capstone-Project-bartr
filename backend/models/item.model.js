@@ -17,6 +17,10 @@ const itemSchema = new mongoose.Schema({
         type: String,
         required: true
     },
+    description: {
+        type: String,
+        required: true
+    },
     // Store images as urls to wherever the image is hosted
     images: [{
         type: String,

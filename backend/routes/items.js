@@ -116,6 +116,7 @@ router.post('/add', async (req, res) => {
             name: req.query.name,
             value: req.query.value,
             user_id: req.query.user_id,
+            description: req.query.description,
             images: [req.query.image_link],
             status: "private"
         }], {session: session})
