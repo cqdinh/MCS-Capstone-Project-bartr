@@ -8,6 +8,19 @@ import Button from 'react-bootstrap/Button'
 import ImageUploader from 'react-images-upload';
 import '../stylesheets/signup.css'
 
+import API from '../../api'
+
+function registerUser(display_name, longitude, latitude, email, phone, password){
+    return API.post("users/register", {
+        display_name: display_name,
+        longitude: longitude, 
+        latitude: latitude,
+        email: email,
+        phone: phone,
+        password: password
+    })
+}
+
 class signup extends React.Component {
     constructor(props) {
         super(props);

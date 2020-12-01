@@ -3,6 +3,22 @@ import ProductCardContainer from '../product/productcardcontainer'
 import NavBar from '../navigation/navbar'
 import '../stylesheets/marketplace.css'
 
+import API from '../../api'
+
+
+// Get all items from nearby users
+async function getNearbyItems(longitude, latitude, distance_km){
+    var nearby_users = await API.get("/users/nearby", {
+        longitude: longitude, 
+        latitude: latitude,
+        distance_km: distance_km
+    })
+    nearby_users = nearby_users.data;
+
+    var nearby_items = await API.get("/users/items_batch", {ids: nearby_users})
+    return nearby_items
+}
+
 export class Marketplace extends Component {
     constructor(props) {
         super(props);

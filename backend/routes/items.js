@@ -64,27 +64,8 @@ Item document
 
 */
 router.get('/get_one', (req, res) => {
-    console.log(req.query)
-
-    var id_arr = []
-    var id_map = {}
-    var id;
-    for(var i = 0; i < Object.keys(req.query).length; i++){
-        id = req.query[String(i)];
-        id_arr.push(id)
-        id_map[id] = i
-    }
-    
-    Item.find({_id: {$in: id_arr}}).then(
-            items => {
-                var ordered = id_arr.map(id => null)
-                
-                items.map((item) => {
-                    ordered[id_map[item._id]] = item
-                })
-
-                res.json(ordered);
-        }
+    Item.findById(req.query.id).then(
+        item => res.json(item)
     ).catch(err => res.status(400).json('Error: ' + err));;
 })
 

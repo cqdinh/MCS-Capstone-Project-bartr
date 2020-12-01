@@ -8,6 +8,13 @@ import Button from 'react-bootstrap/Button'
 import StarRatingComponent from 'react-star-rating-component';
 import '../stylesheets/productpreview.css'
 
+import API from '../../api'
+
+function getItem(item_id){
+    return API.get('items/get_one', {
+        id: item_id
+    });
+}
 
 export class ProductPreview extends Component {
     constructor(props) {

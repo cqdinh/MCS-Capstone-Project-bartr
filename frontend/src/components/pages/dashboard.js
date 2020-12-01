@@ -10,6 +10,12 @@ import ProductCardContainer from '../product/productcardcontainer'
 
 import '../stylesheets/dashboard.css'
 
+import API from '../../api'
+
+function getUser(user_id){
+    return API.get("/users/profile", {id: user_id})
+}
+
 class dashboard extends React.Component {
     constructor(props) {
         super(props);

@@ -9,13 +9,14 @@ const validateLoginInput = require("../validation/login");
 
 // Load User model
 const User = require("../models/user.model");
+const Item = require("../models/item.model");
 
 // Get mongodb connection
 const mongoose = require("mongoose");
 const conn = mongoose.connection;
 
 // Get assertion functions
-const utils = require("../utils")
+const utils = require("../utils");
 const assertTrue = utils.assertTrue;
 const assertFalse = utils.assertFalse;
 
@@ -113,6 +114,15 @@ router.post("/login", (req, res) => {
   });
 });
 
+// Get a user's entire profile
+router.get('/profile', (req, res) => {
+    User.findById(req.query.id).then(
+        user => {
+            res.json(user);
+        }
+    ).catch(err => res.status(400).json('Error: ' + err));;
+})
+
 // Get name of a user
 router.get('/name', (req, res) => {
     User.findById(req.query.id, {display_name: 1}).then(
@@ -128,9 +138,17 @@ router.get('/items', (req, res) => {
         user => {
             res.json(user.items);
         }
-    ).catch(err => res.status(400).json('Error: ' + err));;
+    ).catch();;
 })
 
+// Get Items listed by a set of users
+router.get('/items_batch', async (req, res) => {
+    Item.find({"user_id": {$in: req.query.ids}}).then(
+        items => res.json(items)
+    ).catch(
+        err => res.status(400).json('Error: ' + err)
+    )
+})
 
 // Get users near a specified point
 /* 
