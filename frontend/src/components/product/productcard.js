@@ -15,7 +15,7 @@ export default class ProductCard extends Component {
         return (
             <div className="product-card m-3">
                 <div className="product-img">
-                    <Image src={window.location.origin + product.img} rounded alt="Product Image" className="" height="100px" width="125px"/>
+                    <Image src={product.images[0]} rounded alt="Product Image" className="" height="100px" width="125px"/>
                 </div>
                 <div className="product-desc">
                     <h6 className="product-title">{product.name}</h6>                    

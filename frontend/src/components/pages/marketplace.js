@@ -16,52 +16,34 @@ async function getNearbyItems(longitude, latitude, distance_km){
     nearby_users = nearby_users.data;
 
     var nearby_items = await API.get("/users/items_batch", {ids: nearby_users})
-    return nearby_items
+    return nearby_items.data
 }
 
 export class Marketplace extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            products: [
-                {
-                    img: '/assets/table1.jpg',
-                    name: 'Table'
-                },
-                {
-                    img: '/assets/chair1.jpg',
-                    name: 'Chair'
-                },
-                {
-                    img: '/assets/table1.jpg',
-                    name: 'Table'
-                },
-                {
-                    img: '/assets/chair1.jpg',
-                    name: 'Chair'
-                },
-                {
-                    img: '/assets/table1.jpg',
-                    name: 'Table'
-                },
-                {
-                    img: '/assets/chair1.jpg',
-                    name: 'Chair'
-                },
-                {
-                    img: '/assets/table1.jpg',
-                    name: 'Table'
-                },
-                {
-                    img: '/assets/chair1.jpg',
-                    name: 'Chair'
-                },
-            ],
-            
+            products: []
         };
     }
 
     componentDidMount() {
+        // A user document pulled from the database. Intended to be the logged in user
+        const user = this.props.user;
+        
+        /* Test Location{
+            location: {
+                coordinates: [22.22, 44.44]
+            }   
+        }*/
+
+        // For now, default to 10 mile = 16 km range
+        getNearbyItems(user.location.coordinates[0], user.location.coordinates[1], 16).then(
+            items => {
+                console.log("Items Loaded:", items.length)
+                this.setState({products: items})
+            }
+        ).catch(err => console.log(err))
         // Get all items in the database and set state
     }
 

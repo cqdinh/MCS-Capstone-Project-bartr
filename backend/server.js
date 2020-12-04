@@ -9,6 +9,9 @@ const items = require("./routes/items");
 const trades = require("./routes/trades");
 
 const app = express();
+
+app.use(cors())
+
 // Bodyparser middleware
 app.use(
     bodyParser.urlencoded({

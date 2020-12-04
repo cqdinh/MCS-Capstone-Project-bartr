@@ -143,6 +143,8 @@ router.get('/items', (req, res) => {
 
 // Get Items listed by a set of users
 router.get('/items_batch', async (req, res) => {
+    console.log("Getting Items for users:", req.query)
+
     Item.find({"user_id": {$in: req.query.ids}}).then(
         items => res.json(items)
     ).catch(
@@ -163,6 +165,7 @@ Output Format:
 
 */
 router.get('/nearby', (req, res) => {
+    console.log("Users within", req.query.distance_km, "km of (", req.query.longitude, ", ", req.query.latitude, ") requested")
     User.find({
         location: {
             $nearSphere: {
@@ -176,8 +179,9 @@ router.get('/nearby', (req, res) => {
         }
     }, {_id: 1}).then(
         users => {
-            console.log(req.query.id)
-            res.json(users.map(user => user._id));
+            const user_ids = users.map(user => user._id);
+            console.log(user_ids)
+            res.json(user_ids);
         }
     ).catch(err => res.status(400).json('Error: ' + err));;
 })

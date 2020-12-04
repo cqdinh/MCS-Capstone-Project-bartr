@@ -11,6 +11,7 @@ export class ProductCardContainer extends Component {
         };
     }
     render() {
+        console.log(this.props.products)
         return (
             <Row noGutters={true} className="ml-3">
                 {this.props.products.map((product, index) =>
