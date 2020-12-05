@@ -8,7 +8,7 @@ import Button from "react-bootstrap/Button";
 import Container from "react-bootstrap/Container";
 import ProductCardContainer from "../product/productcardcontainer";
 import { withRouter } from "react-router-dom";
-
+import OfferCardContainer from '../product/offercardcontainer'
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import { logoutUser } from "../../actions/authActions";
@@ -36,19 +36,16 @@ class dashboard extends React.Component {
         },
       ],
 
-      ongoing: [
-        {
-          img: "/assets/table1.jpg",
-          name: "Table",
-        },
-      ],
-
-      past: [
-        {
-          img: "/assets/chair1.jpg",
-          name: "Chair",
-        },
-      ],
+            ongoing: [
+                {
+                    myprodId: 1,
+                    myprodImg: '/assets/table1.jpg',
+                    myprodName: 'Table',
+                    offerprodId: 1,
+                    offerprodImg: '/assets/chair1.jpg',
+                    offerprodName: 'Chair',
+                }
+            ],
 
       name: "Parth Shah",
       address: "3801 Parkview Lane, Irvine, CA - 12312",
@@ -80,17 +77,9 @@ class dashboard extends React.Component {
         <Row noGutters={true}>
           <Col xs={12} md={5} className="dashboard-profile">
             <Row noGutters={true} className="d-flex justify-content-center">
-              <Image
-                src={window.location.origin + "/assets/noimage.jpg"}
-                roundedCircle
-                alt="Profile Photo"
-                className="profile-img"
-              />
-            </Row>
-            <Row
-              noGutters={true}
-              className="d-flex justify-content-center user-name"
-            >
+                            <Image src= {window.location.origin + '/assets/noimage.jpg'} roundedCircle alt="Profile Photo" className="profile-img"/>
+                        </Row> 
+                        <Row noGutters={true} className="d-flex justify-content-center user-name">
               <h3>{user.display_name}</h3>
             </Row>
             <Container>
@@ -113,18 +102,15 @@ class dashboard extends React.Component {
           <Col xs={12} md={7} className="user-collections">
             <Row noGutters={true} className="d-flex justify-content-end m-3">
               <Button variant="primary" type="submit" className="">
-                <Link to="/additem" className="link-button">
-                  Add a New Item
-                </Link>
-              </Button>
-            </Row>
-            <h3 className="ml-3">My Items:</h3>
-            <ProductCardContainer products={this.state.myitems} />
-            <h3 className="ml-3">Ongoing Offers:</h3>
-            <ProductCardContainer products={this.state.ongoing} />
-            <h3 className="ml-3">Past Transactions:</h3>
-            <ProductCardContainer products={this.state.past} />
-          </Col>
+                                <Link to="/additem" className="link-button">Add a New Item</Link>
+                            </Button>
+                        </Row>
+                        <h3 className="ml-3">My Items:</h3>                  
+                        <ProductCardContainer products={this.state.myitems}/>
+                        <h3 className="ml-3">Ongoing Offers:</h3>
+                        <OfferCardContainer products={this.state.ongoing}/>
+                        
+                    </Col>
         </Row>
         <button
           style={{
