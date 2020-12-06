@@ -132,7 +132,7 @@ class signup extends React.Component {
             </Row> */}
           </Col>
           <Col xs={12} md={7} className="p-3">
-            <Form onSubmit={this.handleSubmit}>
+            <Form noValidate onSubmit={this.handleSubmit}>
               <Form.Group controlId="formGridName">
                 <Form.Label>Name :</Form.Label>
                 <Form.Control
