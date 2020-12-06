@@ -26,10 +26,6 @@ class signup extends React.Component {
       password: "",
       password2: "",
       errors: {},
-      address: "",
-      city: "",
-      state: "",
-      zip: "",
       coordinates: {
         latitude: 34,
         longitude: -118,
@@ -51,9 +47,9 @@ class signup extends React.Component {
           latitude: position.coords.latitude,
           longitude: position.coords.longitude,
         };
-        console.log("Here");
-        console.log(newCooords.latitude);
-        console.log(newCooords.longitude);
+        // console.log("Here");
+        // console.log(newCooords.latitude);
+        // console.log(newCooords.longitude);
         this.setState({ coords: newCooords });
       });
     } else {
@@ -61,13 +57,13 @@ class signup extends React.Component {
     }
   }
 
-  // componentWillReceiveProps(nextProps) {
-  //   if (nextProps.errors) {
-  //     this.setState({
-  //       errors: nextProps.errors,
-  //     });
-  //   }
-  // }
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.errors) {
+      this.setState({
+        errors: nextProps.errors,
+      });
+    }
+  }
 
   handleChange = ({ target }) => {
     this.setState({ [target.name]: target.value });
@@ -90,8 +86,6 @@ class signup extends React.Component {
     console.log(this.state.password);
     console.log(this.state.password2);
     console.log(this.state.display_name);
-    console.log(this.state.state);
-    console.log(this.state.address);
 
     const newUser = {
       display_name: this.state.display_name,
@@ -138,7 +132,7 @@ class signup extends React.Component {
             </Row> */}
           </Col>
           <Col xs={12} md={7} className="p-3">
-            <Form noValidate onSubmit={this.handleSubmit}>
+            <Form onSubmit={this.handleSubmit}>
               <Form.Group controlId="formGridName">
                 <Form.Label>Name :</Form.Label>
                 <Form.Control
@@ -227,6 +221,7 @@ class signup extends React.Component {
               <span style={{color: "red",}}>
                 {errors.password2}
               </span>
+              <br />
               <Button variant="primary" type="submit" className="mt-3">
                 Sign Up
               </Button>
