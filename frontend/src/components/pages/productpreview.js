@@ -58,21 +58,21 @@ export class ProductPreview extends Component {
                     </Col>
                     <Col xs={12} md={6} className="product-desc">                    
                         
-                            <h3>Item Info: </h3>
-                            <p>Product Name : {this.state.product.name}</p>
-                            <p>Description : {this.state.product.desc}</p>
-                                                   
-                        
-                            <h3>Seller Info:</h3>
-                            <p>Seller Name : {this.state.product.seller}</p>
-                            <p>Rating: </p>
-                            <StarRatingComponent 
-                            name="Rating" 
-                            starCount={5}
-                            value={3.5}
-                            className="ml-3"
-                            />
-                            <p></p>
+                        <h3>Item Info: </h3>
+                        <p>Product Name : {this.state.product.name}</p>
+                        <p>Description : {this.state.product.desc}</p>
+                                                
+                    
+                        <h3>Seller Info:</h3>
+                        <p>Seller Name : {this.state.product.seller}</p>
+                        <p>Rating: </p>
+                        <StarRatingComponent 
+                        name="Rating" 
+                        starCount={5}
+                        value={3.5}
+                        className="ml-3"
+                        />
+                        <p></p>
                         
                         
                         <Row noGutters={true} className="justify-content-center">

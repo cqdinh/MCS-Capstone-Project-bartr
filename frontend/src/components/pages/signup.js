@@ -124,18 +124,18 @@ class signup extends React.Component {
               noGutters={true}
               className="d-flex justify-content-center mt-2"
             >
-              <Image
-                src={window.location.origin + this.state.img}
-                roundedCircle
-                alt="Profile Photo"
-                className="main-img"
-                height="300px"
-              />
+            <Image
+              src={window.location.origin + '/assets/noimage.jpg'}
+              roundedCircle
+              alt="Profile Photo"
+              className="main-img"
+              height="300px"
+            />
             </Row>
 
             {/* <Row noGutters={true} className="d-flex justify-content-center mt-5">
-                            <Button>Upload Picture</Button>
-                        </Row> */}
+                <Button>Upload Picture</Button>
+            </Row> */}
           </Col>
           <Col xs={12} md={7} className="p-3">
             <Form noValidate onSubmit={this.handleSubmit}>
@@ -153,11 +153,7 @@ class signup extends React.Component {
                   required
                 />
               </Form.Group>
-              <span
-                style={{
-                  color: "red",
-                }}
-              >
+              <span style={{color: "red",}}>
                 {errors.display_name}
               </span>
               <Form.Group controlId="formGridPhone">
@@ -172,11 +168,7 @@ class signup extends React.Component {
                     invalid: errors.phone,
                   })}
                 />
-                <span
-                  style={{
-                    color: "red",
-                  }}
-                >
+                <span style={{color: "red",}}>
                   {errors.phone}
                 </span>
               </Form.Group>
@@ -194,11 +186,7 @@ class signup extends React.Component {
                 required
               />
 
-              <span
-                style={{
-                  color: "red",
-                }}
-              >
+              <span style={{color: "red",}}>
                 {errors.email}
               </span>
               <Form.Row>
@@ -232,19 +220,11 @@ class signup extends React.Component {
                   />
                 </Form.Group>
               </Form.Row>
-              <span
-                style={{
-                  color: "red",
-                }}
-              >
+              <span style={{color: "red",}}>
                 {errors.password}
               </span>
               <br />
-              <span
-                style={{
-                  color: "red",
-                }}
-              >
+              <span style={{color: "red",}}>
                 {errors.password2}
               </span>
               <Button variant="primary" type="submit" className="mt-3">
