@@ -70,9 +70,7 @@ export class AddItem extends Component {
                             <h3>{this.state.name}</h3>                        
                         </Row>
                         <Container>
-                            <Row noGutters={true} className="user-details">
-                                <h6><b>Address:</b> {this.state.address}</h6>
-                            </Row>
+                            
                             <Row noGutters={true} className="user-details">
                                 <h6><b>Phone No:</b> {this.state.phoneNo}</h6>
                             </Row>
@@ -80,10 +78,7 @@ export class AddItem extends Component {
                                 <h6><b>Email:</b> {this.state.email}</h6>
                             </Row>
                         </Container>
-                        <Button variant="primary" type="submit" className="m-3 pl-3 pr-3">
-                            {/* Non Functional for now */}
-                            Edit
-                        </Button>
+                        
                     </Col>
                     <Col xs={12} md={7} className="user-collections">  
                         <h3>Add new Item</h3>

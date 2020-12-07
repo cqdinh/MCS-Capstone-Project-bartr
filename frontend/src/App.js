@@ -18,6 +18,7 @@ import dashboard from "./components/pages/dashboard";
 import MakeOffer from './components/pages/makeoffer';
 import { Provider } from "react-redux";
 import store from "./store";
+import Edit from './components/pages/edit';
 
 // Check for token to keep user logged in
 if (localStorage.jwtToken) {
@@ -43,15 +44,16 @@ function App() {
     <Provider store={store}>
       <Router>
         <Switch>
-          <Route path="/" exact component={Landing} />
-          <Route path="/signup" exact component={SignUp} />
-          <Route path="/help" exact component={Help} />
-          <Route path="/dashboard" exact component={DashBoard} />
+        <Route path="/" exact component={Landing} />
+        <Route path="/signup" exact component={SignUp} />
+        <Route path="/help" exact component={Help} />
+        <Route path="/dashboard/edit" exact component={Edit} />     
+        <Route path="/dashboard" exact component={DashBoard} />
         <Route path="/productpreview/:productNum" exact component={ProductPreview} />
         <Route path="/marketplace" exact component={Marketplace} />
         <Route path="/additem" exact component={AddItem} />   
         <Route path="/makeoffer/:productNum" exact component={MakeOffer} />        
-
+        
         <Route component={Error} />
       </Switch>
       

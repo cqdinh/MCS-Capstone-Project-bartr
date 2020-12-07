@@ -96,8 +96,8 @@ class dashboard extends React.Component {
               </Row>
             </Container>
             <Button variant="primary" type="submit" className="m-3 pl-3 pr-3">
-              {/* Non Functional for now */}
-              Edit
+              <Link to="/dashboard/edit" className="link-button">Edit</Link>
+              
             </Button>
           </Col>
           <Col xs={12} md={7} className="user-collections">
