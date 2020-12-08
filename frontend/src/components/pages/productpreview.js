@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import ImageContainer from '../product/imagecontainer';
+import {Link, withRouter} from 'react-router-dom'
 import NavBar from '../navigation/navbar'
 import Row from 'react-bootstrap/Row'
 import Col from 'react-bootstrap/Col'
@@ -25,17 +26,22 @@ export class ProductPreview extends Component {
                 name: 'Table',
                 desc: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla ultrices fermentum ipsum quis feugiat. Proin eu sem nec velit suscipit aliquet. Sed scelerisque eros a varius euismod. Sed tincidunt metus a mattis ultrices. Aenean auctor sed ipsum eget dictum. Fusce ut laoreet mi. Nunc lacinia imperdiet tellus, sed hendrerit nulla pretium vel.",
                 seller: 'Parth Shah',
-            }
+            },
             
+            productId: 0,
         };
     }
 
     componentDidMount() {
-        const {productId} = this.props.match.params;
-
-        console.log(productId);
+        const {productNum} = this.props.match.params;
+        this.setState({productId: productNum});
+        console.log(productNum);
 
         // Get product details from Product Id and set State
+    }
+
+    makeOffer = () => {
+        this.props.history.push("/makeoffer/" + this.state.productId);
     }
 
     render() {
@@ -52,26 +58,26 @@ export class ProductPreview extends Component {
                     </Col>
                     <Col xs={12} md={6} className="product-desc">                    
                         
-                            <h3>Item Info: </h3>
-                            <p>Product Name : {this.state.product.name}</p>
-                            <p>Description : {this.state.product.desc}</p>
-                                                   
-                        
-                            <h3>Seller Info:</h3>
-                            <p>Seller Name : {this.state.product.seller}</p>
-                            <p>Rating: </p>
-                            <StarRatingComponent 
-                            name="Rating" 
-                            starCount={5}
-                            value={3.5}
-                            className="ml-3"
-                            />
-                            <p></p>
+                        <h3>Item Info: </h3>
+                        <p>Product Name : {this.state.product.name}</p>
+                        <p>Description : {this.state.product.desc}</p>
+                                                
+                    
+                        <h3>Seller Info:</h3>
+                        <p>Seller Name : {this.state.product.seller}</p>
+                        <p>Rating: </p>
+                        <StarRatingComponent 
+                        name="Rating" 
+                        starCount={5}
+                        value={3.5}
+                        className="ml-3"
+                        />
+                        <p></p>
                         
                         
                         <Row noGutters={true} className="justify-content-center">
-                            {/* Redirect to Select Products from User's Items and Make Post Request */}
-                            <Button variant="primary" type="submit" className=" pl-3 pr-3">
+                            {/* Redirect to Select Products from User's Items and Pass ProductId */}
+                            <Button variant="primary" onClick={this.makeOffer} className=" pl-3 pr-3">
                                 Make an Offer
                             </Button>
                         </Row>
@@ -84,4 +90,4 @@ export class ProductPreview extends Component {
     }
 }
 
-export default ProductPreview
+export default withRouter(ProductPreview)

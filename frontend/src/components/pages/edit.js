@@ -1,22 +1,23 @@
-import React from "react";
+import React, { Component } from "react";
+import { withRouter } from "react-router-dom";
+import NavBar from "../navigation/navbar";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import Image from "react-bootstrap/Image";
-import LandingNav from "../navigation/landingNav";
-import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
+import Container from "react-bootstrap/Container";
+import Form from "react-bootstrap/Form";
 import ImageUploader from "react-images-upload";
-import "../stylesheets/signup.css";
-import { Link, withRouter } from "react-router-dom";
+import classnames from "classnames";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
-import { registerUser } from "../../actions/authActions";
-import classnames from "classnames";
-import Geocode from "react-geocode";
+import { updateUser } from "../../actions/authActions";
+
+import "../stylesheets/signup.css";
 
 import API from "../../api";
 
-class signup extends React.Component {
+export class Edit extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -34,27 +35,20 @@ class signup extends React.Component {
   }
 
   componentDidMount() {
+    // const {userId} = this.props.match.params; // Get userId from props
+    // Use userId to get user details, products and set state
+    // If userId does not exist in databse redirect to landing page
     // If logged in and user navigates to Register page, should redirect them to dashboard
-    if (this.props.auth.isAuthenticated) {
-      this.props.history.push("/dashboard");
+    if (!this.props.auth.isAuthenticated) {
+      this.props.history.push("/");
     }
-
-    if (navigator.geolocation) {
-      //console.log("Inside navigator");
-      navigator.geolocation.getCurrentPosition((position) => {
-        //console.log(position);
-        let newCooords = {
-          latitude: position.coords.latitude,
-          longitude: position.coords.longitude,
-        };
-        // console.log("Here");
-        // console.log(newCooords.latitude);
-        // console.log(newCooords.longitude);
-        this.setState({ coords: newCooords });
-      });
-    } else {
-      console.log("Not supported");
-    }
+    console.log("User");
+    console.log(this.props.auth.user);
+    this.setState({
+      display_name: this.props.auth.user.display_name,
+      email: this.props.auth.user.email,
+      phone: this.props.auth.user.phone,
+    });
   }
 
   componentWillReceiveProps(nextProps) {
@@ -67,10 +61,6 @@ class signup extends React.Component {
 
   handleChange = ({ target }) => {
     this.setState({ [target.name]: target.value });
-  };
-
-  onChange = (e) => {
-    this.setState({ [e.target.id]: e.target.value });
   };
 
   onDrop = (picture) => {
@@ -97,39 +87,42 @@ class signup extends React.Component {
       phone: this.state.phone,
     };
     console.log(newUser);
-    this.props.registerUser(newUser, this.props.history);
-    // Make Post request here
-
-    // If success
-    //alert("Sign Up Success");
-    //document.getElementById("logo").click();
-    // If Fail
-    //alert("Sign Up unsuccessful. Try Again");
+    this.props.updateUser(newUser, this.props.history);
   };
 
   render() {
     const { errors } = this.state;
     return (
       <div>
-        <LandingNav />
-        <Row noGutters={true} className="signup-page">
-          <Col xs={12} md={5} className="">
+        <NavBar />
+        <Row noGutters={true}>
+          <Col xs={12} md={5} className="dashboard-profile">
+            <Row noGutters={true} className="d-flex justify-content-center">
+              <Image
+                src={window.location.origin + "/assets/noimage.jpg"}
+                roundedCircle
+                alt="Profile Photo"
+                className="profile-img"
+              />
+            </Row>
             <Row
               noGutters={true}
-              className="d-flex justify-content-center mt-2"
+              className="d-flex justify-content-center user-name"
             >
-            <Image
-              src={window.location.origin + '/assets/noimage.jpg'}
-              roundedCircle
-              alt="Profile Photo"
-              className="main-img"
-              height="300px"
-            />
+              <h3>{this.state.display_name}</h3>
             </Row>
-
-            {/* <Row noGutters={true} className="d-flex justify-content-center mt-5">
-                <Button>Upload Picture</Button>
-            </Row> */}
+            <Container>
+              <Row noGutters={true} className="user-details">
+                <h6>
+                  <b>Phone No:</b> {this.state.phone}
+                </h6>
+              </Row>
+              <Row noGutters={true} className="user-details">
+                <h6>
+                  <b>Email:</b> {this.state.email}
+                </h6>
+              </Row>
+            </Container>
           </Col>
           <Col xs={12} md={7} className="p-3">
             <Form noValidate onSubmit={this.handleSubmit}>
@@ -147,9 +140,7 @@ class signup extends React.Component {
                   required
                 />
               </Form.Group>
-              <span style={{color: "red",}}>
-                {errors.display_name}
-              </span>
+              <span style={{ color: "red" }}>{errors.display_name}</span>
               <Form.Group controlId="formGridPhone">
                 <Form.Label>Phone Number :</Form.Label>
                 <Form.Control
@@ -162,9 +153,7 @@ class signup extends React.Component {
                     invalid: errors.phone,
                   })}
                 />
-                <span style={{color: "red",}}>
-                  {errors.phone}
-                </span>
+                <span style={{ color: "red" }}>{errors.phone}</span>
               </Form.Group>
 
               <Form.Label>Email :</Form.Label>
@@ -180,9 +169,7 @@ class signup extends React.Component {
                 required
               />
 
-              <span style={{color: "red",}}>
-                {errors.email}
-              </span>
+              <span style={{ color: "red" }}>{errors.email}</span>
               <Form.Row>
                 <Form.Group as={Col} controlId="formGridPassword">
                   <Form.Label>Password :</Form.Label>
@@ -214,16 +201,12 @@ class signup extends React.Component {
                   />
                 </Form.Group>
               </Form.Row>
-              <span style={{color: "red",}}>
-                {errors.password}
-              </span>
+              <span style={{ color: "red" }}>{errors.password}</span>
               <br />
-              <span style={{color: "red",}}>
-                {errors.password2}
-              </span>
+              <span style={{ color: "red" }}>{errors.password2}</span>
               <br />
               <Button variant="primary" type="submit" className="mt-3">
-                Sign Up
+                Save Changes
               </Button>
             </Form>
           </Col>
@@ -233,9 +216,10 @@ class signup extends React.Component {
   }
 }
 
-//export default signup;
-signup.propTypes = {
-  registerUser: PropTypes.func.isRequired,
+// export default withRouter(Edit)
+
+Edit.propTypes = {
+  updateUser: PropTypes.func.isRequired,
   auth: PropTypes.object.isRequired,
   errors: PropTypes.object.isRequired,
 };
@@ -244,5 +228,5 @@ const mapStateToProps = (state) => ({
   errors: state.errors,
 });
 export default withRouter(
-  connect(mapStateToProps, { registerUser })(withRouter(signup))
+  connect(mapStateToProps, { updateUser })(withRouter(Edit))
 );

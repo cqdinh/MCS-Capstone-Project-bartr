@@ -38,7 +38,7 @@ export class Marketplace extends Component {
         }*/
 
         // For now, default to 10 mile = 16 km range
-        getNearbyItems(user.location.coordinates[0], user.location.coordinates[1], 16).then(
+        getNearbyItems(22.22, 44.44, 16).then(
             items => {
                 console.log("Items Loaded:", items.length)
                 this.setState({products: items})

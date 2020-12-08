@@ -176,7 +176,7 @@ class LandingNav extends React.Component {
                 Log In
               </Button>
               <Button variant="primary">
-                <Link to="/signup" style={{ color: "white" }}>
+                <Link to="/signup" className="link-button">
                   Sign Up
                 </Link>
               </Button>

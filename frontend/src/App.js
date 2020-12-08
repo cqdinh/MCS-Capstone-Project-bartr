@@ -1,13 +1,13 @@
-import React from "react";
-import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
-import Landing from "./components/pages/landing";
-import SignUp from "./components/pages/signup";
-import DashBoard from "./components/pages/dashboard";
-import ProductPreview from "./components/pages/productpreview";
-import Error from "./components/pages/error";
-import Marketplace from "./components/pages/marketplace";
-import Help from "./components/pages/help";
-import AddItem from "./components/pages/additem";
+import React from 'react';
+import {BrowserRouter as Router, Switch, Route} from 'react-router-dom';
+import Landing from './components/pages/landing'
+import SignUp from './components/pages/signup'
+import DashBoard from './components/pages/dashboard'
+import ProductPreview from './components/pages/productpreview'
+import Error from './components/pages/error'
+import Marketplace from './components/pages/marketplace';
+import Help from './components/pages/help';
+import AddItem from './components/pages/additem';
 
 import jwt_decode from "jwt-decode";
 import setAuthToken from "./utils/setAuthToken";
@@ -15,9 +15,10 @@ import { setCurrentUser, logoutUser } from "./actions/authActions";
 
 import PrivateRoute from "./components/private-route/PrivateRoute";
 import dashboard from "./components/pages/dashboard";
-
+import MakeOffer from './components/pages/makeoffer';
 import { Provider } from "react-redux";
 import store from "./store";
+import Edit from './components/pages/edit';
 
 // Check for token to keep user logged in
 if (localStorage.jwtToken) {
@@ -43,21 +44,20 @@ function App() {
     <Provider store={store}>
       <Router>
         <Switch>
-          <Route path="/" exact component={Landing} />
-          <Route path="/signup" exact component={SignUp} />
-          <Route path="/help" exact component={Help} />
-          <Route path="/dashboard" exact component={DashBoard} />
-          <Route
-            path="/productpreview/:productId"
-            exact
-            component={ProductPreview}
-          />
-          <Route path="/marketplace" exact component={Marketplace} />
-          <Route path="/additem" exact component={AddItem} />
-          <PrivateRoute exact path="/dashboard" component={dashboard} />
-          <Route component={Error} />
-        </Switch>
-      </Router>
+        <Route path="/" exact component={Landing} />
+        <Route path="/signup" exact component={SignUp} />
+        <Route path="/help" exact component={Help} />
+        <Route path="/dashboard/edit" exact component={Edit} />     
+        <Route path="/dashboard" exact component={DashBoard} />
+        <Route path="/productpreview/:productNum" exact component={ProductPreview} />
+        <Route path="/marketplace" exact component={Marketplace} />
+        <Route path="/additem" exact component={AddItem} />   
+        <Route path="/makeoffer/:productNum" exact component={MakeOffer} />        
+        
+        <Route component={Error} />
+      </Switch>
+      
+      </Router>    
     </Provider>
   );
 }

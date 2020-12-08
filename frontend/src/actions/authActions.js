@@ -14,6 +14,19 @@ export const registerUser = (userData, history) => (dispatch) => {
       })
     );
 };
+
+// Update User
+export const updateUser = (userData, history) => (dispatch) => {
+  axios
+    .post("/api/users/updateUser", userData)
+    .then((res) => history.push("/dashboard")) // re-direct to login on successful register
+    .catch((err) =>
+      dispatch({
+        type: GET_ERRORS,
+        payload: err.response.data,
+      })
+    );
+};
 // Login - get user token
 export const loginUser = (userData) => (dispatch) => {
   axios
@@ -30,6 +43,8 @@ export const loginUser = (userData) => (dispatch) => {
       // Decode token to get user data
       const decoded = jwt_decode(token);
       // Set current user
+      console.log("1-1-1-1-1-1-1-1-1");
+      console.log(decoded);
       dispatch(setCurrentUser(decoded));
     })
     .catch((err) =>

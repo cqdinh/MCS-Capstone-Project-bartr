@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { Link } from "react-router-dom";
+import { Link, withRouter} from "react-router-dom";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import Image from "react-bootstrap/Image";
@@ -7,8 +7,7 @@ import NavBar from "../navigation/navbar";
 import Button from "react-bootstrap/Button";
 import Container from "react-bootstrap/Container";
 import ProductCardContainer from "../product/productcardcontainer";
-import { withRouter } from "react-router-dom";
-
+import OfferCardContainer from '../product/offercardcontainer'
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import { logoutUser } from "../../actions/authActions";
@@ -37,17 +36,14 @@ class dashboard extends React.Component {
       ],
 
       ongoing: [
-        {
-          img: "/assets/table1.jpg",
-          name: "Table",
-        },
-      ],
-
-      past: [
-        {
-          img: "/assets/chair1.jpg",
-          name: "Chair",
-        },
+          {
+              myprodId: 1,
+              myprodImg: '/assets/table1.jpg',
+              myprodName: 'Table',
+              offerprodId: 1,
+              offerprodImg: '/assets/chair1.jpg',
+              offerprodName: 'Chair',
+          }
       ],
 
       name: "Parth Shah",
@@ -70,6 +66,8 @@ class dashboard extends React.Component {
     if (!this.props.auth.isAuthenticated) {
       this.props.history.push("/");
     }
+    console.log("User")
+    console.log(this.props.auth.user);
   }
 
   render() {
@@ -80,17 +78,9 @@ class dashboard extends React.Component {
         <Row noGutters={true}>
           <Col xs={12} md={5} className="dashboard-profile">
             <Row noGutters={true} className="d-flex justify-content-center">
-              <Image
-                src={window.location.origin + "/assets/noimage.jpg"}
-                roundedCircle
-                alt="Profile Photo"
-                className="profile-img"
-              />
-            </Row>
-            <Row
-              noGutters={true}
-              className="d-flex justify-content-center user-name"
-            >
+              <Image src= {window.location.origin + '/assets/noimage.jpg'} roundedCircle alt="Profile Photo" className="profile-img"/>
+            </Row> 
+            <Row noGutters={true} className="d-flex justify-content-center user-name">
               <h3>{user.display_name}</h3>
             </Row>
             <Container>
@@ -106,38 +96,24 @@ class dashboard extends React.Component {
               </Row>
             </Container>
             <Button variant="primary" type="submit" className="m-3 pl-3 pr-3">
-              {/* Non Functional for now */}
-              Edit
+              <Link to="/dashboard/edit" className="link-button">Edit</Link>
+              
             </Button>
           </Col>
           <Col xs={12} md={7} className="user-collections">
             <Row noGutters={true} className="d-flex justify-content-end m-3">
               <Button variant="primary" type="submit" className="">
-                <Link to="/additem" className="link-button">
-                  Add a New Item
-                </Link>
+                  <Link to="/additem" className="link-button">Add a New Item</Link>
               </Button>
             </Row>
-            <h3 className="ml-3">My Items:</h3>
-            <ProductCardContainer products={this.state.myitems} />
+            <h3 className="ml-3">My Items:</h3>                  
+            <ProductCardContainer products={this.state.myitems}/>
             <h3 className="ml-3">Ongoing Offers:</h3>
-            <ProductCardContainer products={this.state.ongoing} />
-            <h3 className="ml-3">Past Transactions:</h3>
-            <ProductCardContainer products={this.state.past} />
+            <OfferCardContainer products={this.state.ongoing}/>
+          
           </Col>
         </Row>
-        <button
-          style={{
-            width: "150px",
-            borderRadius: "3px",
-            letterSpacing: "1.5px",
-            marginTop: "1rem",
-          }}
-          onClick={this.onLogoutClick}
-          className="btn btn-large"
-        >
-          Logout
-        </button>
+        
       </div>
     );
   }
