@@ -19,6 +19,8 @@ import API from "../../api";
 class signup extends React.Component {
   constructor(props) {
     super(props);
+    console.log("signup Props")
+    console.log(props)
     this.state = {
       display_name: "",
       email: "",
@@ -26,9 +28,9 @@ class signup extends React.Component {
       password: "",
       password2: "",
       errors: {},
-      coordinates: {
-        latitude: 34,
-        longitude: -118,
+      coordinates: {// Default to coordinates at UCI
+        latitude: 33.64597,
+        longitude: -117.84282
       },
     };
   }
@@ -40,17 +42,18 @@ class signup extends React.Component {
     }
 
     if (navigator.geolocation) {
-      //console.log("Inside navigator");
-      navigator.geolocation.getCurrentPosition((position) => {
+        //console.log("Inside navigator");
+        navigator.geolocation.getCurrentPosition((position) => {
         //console.log(position);
-        let newCooords = {
-          latitude: position.coords.latitude,
-          longitude: position.coords.longitude,
-        };
         // console.log("Here");
         // console.log(newCooords.latitude);
         // console.log(newCooords.longitude);
-        this.setState({ coords: newCooords });
+        this.setState({ 
+            coordinates: {
+                latitude: position.coords.latitude,
+                longitude: position.coords.longitude
+            }
+        });
       });
     } else {
       console.log("Not supported");
@@ -147,6 +150,7 @@ class signup extends React.Component {
                   required
                 />
               </Form.Group>
+              
               <span style={{color: "red",}}>
                 {errors.display_name}
               </span>

@@ -9,7 +9,7 @@ function landing() {
         <div className="landing-page">
             <LandingNav />
             <div className="landing-image">
-                <img className="image" src={window.location.origin + '/assets/barter2.jpg'} height="307px" />
+                <img className="image" src={window.location.origin + '/assets/barter2.jpg'} alt="" height="307px" />
             </div>
             <Container className="landing-page-text">
                 <div className="text-desc">

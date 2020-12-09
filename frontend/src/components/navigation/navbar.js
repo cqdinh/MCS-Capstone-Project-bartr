@@ -22,6 +22,7 @@ class navbar extends React.Component {
     };
 
     render () {
+        console.log("Navbar Props", this.props)
         return (        
             <>    
             <Navbar expand="md" variant="dark" className="navigation-bar">

@@ -5,6 +5,13 @@
     background-color: white;
 }
 
+.product-card-selected {
+    border: 1px solid #182628;
+    border-radius: 5px;
+    padding: 10px;
+    background-color: lightblue;
+}
+
 .product-img {
     text-align: center;
 }

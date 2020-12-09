@@ -4,16 +4,14 @@ import axios from 'axios';
 // {params: <parameter object>}
 // for every api call
 const AxiosAPI = {
-    api: axios.create({
-        baseURL: `http://localhost:5000/api/`
-    }),
+    baseURL: 'http://localhost:5000/api/',
 
     get: function(url, params){
-        return this.api.get(url, {params: params})
+        return axios.get(this.baseURL + url, {params: params})
     },
 
     post: function(url, params){
-        return this.api.post(url, {params: params})
+        return axios.post(this.baseURL + url, params)
     }
 }
 

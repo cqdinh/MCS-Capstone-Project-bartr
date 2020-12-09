@@ -29,26 +29,14 @@ Array of item documents in the order the ids were given
 
 */
 router.get('/get', (req, res) => {
-    console.log(req.query)
-
-    var id_arr = []
-    var id_map = {}
-    var id;
-    for(var i = 0; i < Object.keys(req.query).length; i++){
-        id = req.query[String(i)];
-        id_arr.push(id)
-        id_map[id] = i
-    }
+    console.log("Getting Multiple Items:", req.query)
+    const object_ids = req.query.ids.map(x => mongoose.Types.ObjectId(x))
     
-    Item.find({_id: {$in: id_arr}}).then(
+    Item.find({_id: {$in: object_ids}}).then(
             items => {
-                var ordered = id_arr.map(id => null)
-                
-                items.map((item) => {
-                    ordered[id_map[item._id]] = item
-                })
+                console.log(items)
 
-                res.json(ordered);
+                res.json(items);
         }
     ).catch(err => res.status(400).json('Error: ' + err));;
 })
@@ -64,6 +52,7 @@ Item document
 
 */
 router.get('/get_one', (req, res) => {
+    console.log("Getting A Single Item:", req.query)
     Item.findById(req.query.id).then(
         item => res.json(item)
     ).catch(err => res.status(400).json('Error: ' + err));;
@@ -88,17 +77,17 @@ router.post("/update", (req, res) => {
 router.post('/add', async (req, res) => {
     const session = await conn.startSession()
 
-    console.log("Adding New Item:", req.query)
-    
+    console.log("Adding New Item:", req.body)
+
     session.startTransaction()
 
     try {
         var item = await Item.create([{
-            name: req.query.name,
-            value: req.query.value,
-            user_id: req.query.user_id,
-            description: req.query.description,
-            images: [req.query.image_link],
+            name: req.body.name,
+            value: req.body.value,
+            user_id: req.body.user_id,
+            description: req.body.description,
+            images: [req.body.image_link],
             status: "private"
         }], {session: session})
 
@@ -106,7 +95,7 @@ router.post('/add', async (req, res) => {
 
         item = item[0];
 
-        const user = await User.findByIdAndUpdate(mongoose.Types.ObjectId(req.query.user_id), {
+        const user = await User.findByIdAndUpdate(mongoose.Types.ObjectId(req.body.user_id), {
             $push: {items: item._id}
         }, {session: session})
 
@@ -118,6 +107,7 @@ router.post('/add', async (req, res) => {
         res.json("Item Created")
 
     } catch (err) {
+        console.log("Error")
         console.log(err)
         await session.abortTransaction()
         session.endSession()

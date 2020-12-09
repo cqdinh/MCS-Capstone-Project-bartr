@@ -217,6 +217,16 @@ router.get("/name", (req, res) => {
     .catch((err) => res.status(400).json("Error: " + err));
 });
 
+// Get name of a user
+router.get("/location", (req, res) => {
+    console.log("Getting User's Location", req.query.id)
+    User.findById(req.query.id, { location : 1 })
+      .then((user) => {
+        res.json(user.location.coordinates);
+      })
+      .catch((err) => res.status(400).json("Error: " + err));
+  });
+
 // Get Items listed by a user
 router.get("/items", (req, res) => {
   User.findById(req.query.id, { items: 1 })

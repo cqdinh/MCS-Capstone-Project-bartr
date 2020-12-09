@@ -9,8 +9,11 @@ const Trade = require("../models/trade.model");
 const mongoose = require("mongoose");
 const conn = mongoose.connection;
 
+
+// Get assertion functions
 const utils = require("../utils")
-const assert = utils.assert;
+const assertTrue = utils.assertTrue;
+const assertFalse = utils.assertFalse;
 
 
 // Get trades by id
@@ -29,24 +32,38 @@ Array of trade documents in the order the ids were given
 router.get('/get', (req, res) => {
     console.log(req.query)
 
-    var id_arr = []
-    var id_map = {}
-    var id;
-    for(var i = 0; i < Object.keys(req.query).length; i++){
-        id = req.query[String(i)];
-        id_arr.push(id)
-        id_map[id] = i
-    }
+    const object_ids = req.query.ids.map(x => mongoose.Types.ObjectId(x))
     
-    Trade.find({_id: {$in: id_arr}}).then(
+    Trade.find({_id: {$in: object_ids}}).then(
             trades => {
-                var ordered = id_arr.map(id => null)
                 
-                trades.map((trade) => {
-                    ordered[id_map[trade._id]] = trade
-                })
+                res.json(trades);
+        }
+    ).catch(err => res.status(400).json('Error: ' + err));;
+})
 
-                res.json(ordered);
+// Get all the offers a user needs to respond to
+router.get('/get_received', (req, res) => {
+    console.log(req.query)
+
+    const user_id = mongoose.Types.ObjectId(req.query.id)
+    
+    Trade.find({$or: [{user1_id: user_id, status: "awaiting_user1"}, {user2_id: user_id, status: "awaiting_user2"}]}).then(
+            trades => {
+                res.json(trades);
+        }
+    ).catch(err => res.status(400).json('Error: ' + err));;
+})
+
+// Get all the offers a user has sent
+router.get('/get_sent', (req, res) => {
+    console.log(req.query)
+
+    const user_id = mongoose.Types.ObjectId(req.query.id)
+    
+    Trade.find({$or: [{user1_id: user_id, status: "awaiting_user2"}, {user2_id: user_id, status: "awaiting_user1"}]}).then(
+            trades => {
+                res.json(trades);
         }
     ).catch(err => res.status(400).json('Error: ' + err));;
 })
@@ -63,7 +80,7 @@ Input Format: {
 router.post('/start', async (req, res) => {
     const session = await mongoose.connection.startSession()
 
-    console.log("Query:", req.query)
+    console.log("Query:", req.body)
     
     session.startTransaction()
 
@@ -71,23 +88,23 @@ router.post('/start', async (req, res) => {
         var trade = await Trade.create([{
             init_timestamp: new Date(),
             complete_timestamp: null,
-            status: "offer",
-            user1_id: req.query.initiator_id,
-            user2_id: req.query.recipient_id,
-            user1_items: req.query.initiator_items,
-            user2_items: req.query.recipient_items
+            status: "awaiting_user2",
+            user1_id: req.body.initiator_id,
+            user2_id: req.body.recipient_id,
+            user1_items: req.body.initiator_items,
+            user2_items: req.body.recipient_items
         }], {session: session})
 
         assertFalse(trade.length == 0, "Trade Not Created")
         trade = trade[0]
 
-        const initiator = await User.findByIdAndUpdate(mongoose.Types.ObjectId(req.query.initiator_id), {
+        const initiator = await User.findByIdAndUpdate(mongoose.Types.ObjectId(req.body.initiator_id), {
             $push: {curr_trades: trade._id}
         }, {session: session})
 
         assertFalse(initiator == null, "Initiator Not Found")
 
-        const recipient = await User.findByIdAndUpdate(mongoose.Types.ObjectId(req.query.recipient_id), {
+        const recipient = await User.findByIdAndUpdate(mongoose.Types.ObjectId(req.body.recipient_id), {
             $push: {curr_trades: trade._id}
         }, {session: session})
 
@@ -103,6 +120,14 @@ router.post('/start', async (req, res) => {
         session.endSession()
         res.status(400).json("Error: " + err)
     }
+})
+
+router.post('/delete', async (req, res) => {
+    console.log("Cancelling Trade", req.body.id)
+    
+    await Trade.findByIdAndUpdate(req.body.id, {
+        status: "cancelled"
+    })
 })
 
 module.exports = router;

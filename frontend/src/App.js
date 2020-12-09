@@ -49,10 +49,10 @@ function App() {
         <Route path="/help" exact component={Help} />
         <Route path="/dashboard/edit" exact component={Edit} />     
         <Route path="/dashboard" exact component={DashBoard} />
-        <Route path="/productpreview/:productNum" exact component={ProductPreview} />
+        <Route path="/productpreview" exact component={ProductPreview} />
         <Route path="/marketplace" exact component={Marketplace} />
         <Route path="/additem" exact component={AddItem} />   
-        <Route path="/makeoffer/:productNum" exact component={MakeOffer} />        
+        <Route path="/makeoffer" exact component={MakeOffer} />        
         
         <Route component={Error} />
       </Switch>

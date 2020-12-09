@@ -13,8 +13,8 @@ export class OfferCardContainer extends Component {
     render() {
         return (
             <Row noGutters={true} className="ml-3">
-                {this.props.products.map((product, index) =>
-                    <OfferCard product={product} key={index}></OfferCard>
+                {this.props.trades.map((trade, index) =>
+                    <OfferCard mode={this.props.mode} trade={trade} key={index}></OfferCard>
                 )}                                        
             </Row>
         )

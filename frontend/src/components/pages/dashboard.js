@@ -17,39 +17,35 @@ import "../stylesheets/dashboard.css";
 import API from "../../api";
 
 function getUser(user_id) {
-  return API.get("/users/profile", { id: user_id });
+    return API.get("users/profile", { id: user_id });
+}
+
+function getItems(item_ids){
+    return API.get("items/get", { ids: item_ids });
+}
+
+function getReceivedTrades(user_id){
+    return API.get("trades/get_received", { id: user_id });
+}
+
+function getSentTrades(user_id){
+    return API.get("trades/get_sent", { id: user_id });
 }
 
 class dashboard extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      myitems: [
-        {
-          img: "/assets/table1.jpg",
-          name: "Table",
-        },
-        {
-          img: "/assets/chair1.jpg",
-          name: "Chair",
-        },
-      ],
+      myitems: [],
 
-      ongoing: [
-          {
-              myprodId: 1,
-              myprodImg: '/assets/table1.jpg',
-              myprodName: 'Table',
-              offerprodId: 1,
-              offerprodImg: '/assets/chair1.jpg',
-              offerprodName: 'Chair',
-          }
-      ],
+      sent: [],
+      received: [],
 
-      name: "Parth Shah",
-      address: "3801 Parkview Lane, Irvine, CA - 12312",
-      phoneNo: "21232435665",
-      email: "parth@gmail.com",
+      name: "",
+      phoneNo: "",
+      email: "",
+
+      should_reload: false
     };
   }
 
@@ -59,16 +55,61 @@ class dashboard extends React.Component {
   };
 
   componentDidMount() {
-    // const {userId} = this.props.match.params; // Get userId from props
     // Use userId to get user details, products and set state
     // If userId does not exist in databse redirect to landing page
     // If logged in and user navigates to Register page, should redirect them to dashboard
     if (!this.props.auth.isAuthenticated) {
       this.props.history.push("/");
     }
-    console.log("User")
-    console.log(this.props.auth.user);
+    //console.log("User")
+    //console.log(this.props.auth);
+
+    
+    //console.log("Dashboard mount")
+    //console.log(userId)
+    this.load_data()
+
+    // Update every 5 seconds to include added items
+    this.interval = setInterval(this.load_data.bind(this), 5000)
   }
+
+  componentWillUnmount(){
+      clearInterval(this.interval)
+  }
+
+  load_data(){
+
+    const userId = this.props.auth.user.id; // Get userId from props
+    getUser(userId).then(
+        async res => {
+            let profile = res.data;
+            //console.log("profile", profile)
+            this.setState({should_reload: false})
+            if (profile.items.length !== 0){
+                let items = await getItems(profile.items)
+                this.setState({
+                    myitems: items.data
+                })
+
+                if (profile.curr_trades.length !== 0){
+                    let received = await getReceivedTrades(profile._id)
+                    let sent = await getSentTrades(profile._id)
+                    this.setState({
+                        sent: sent.data,
+                        received: received.data
+                    })
+                }
+            }
+            
+            this.setState({
+                name: profile.display_name,
+                phone: profile.phone,
+                email: profile.email
+            })
+        }
+    )
+  }
+
 
   render() {
     const { user } = this.props.auth;
@@ -79,7 +120,7 @@ class dashboard extends React.Component {
           <Col xs={12} md={5} className="dashboard-profile">
             <Row noGutters={true} className="d-flex justify-content-center">
               <Image src= {window.location.origin + '/assets/noimage.jpg'} roundedCircle alt="Profile Photo" className="profile-img"/>
-            </Row> 
+            </Row>
             <Row noGutters={true} className="d-flex justify-content-center user-name">
               <h3>{user.display_name}</h3>
             </Row>
@@ -107,10 +148,11 @@ class dashboard extends React.Component {
               </Button>
             </Row>
             <h3 className="ml-3">My Items:</h3>                  
-            <ProductCardContainer products={this.state.myitems}/>
-            <h3 className="ml-3">Ongoing Offers:</h3>
-            <OfferCardContainer products={this.state.ongoing}/>
-          
+            <ProductCardContainer products={this.state.myitems} buttonMode={"preview"} ownedByUser={true}/>
+            <h3 className="ml-3">Received Offers:</h3>
+            <OfferCardContainer mode="received" trades={this.state.received}/>
+            <h3 className="ml-3">Sent Offers:</h3>
+            <OfferCardContainer mode="sent" trades={this.state.sent}/>
           </Col>
         </Row>
         

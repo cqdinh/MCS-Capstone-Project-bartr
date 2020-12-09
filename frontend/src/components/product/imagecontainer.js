@@ -14,7 +14,7 @@ export class ImageContainer extends Component {
         return (
             <Row noGutters={true} className="ml-3 justify-content-center">
                 {this.props.images.map((img, index) =>
-                    <Image src={window.location.origin + img} rounded alt={"Product Image " + index} height="100px" className="m-2"/>
+                    <Image src={img} rounded alt={"Product Image " + index} height="100px" className="m-2"/>
                 )}
                                         
             </Row>

@@ -1,11 +1,11 @@
 import { SET_CURRENT_USER, USER_LOADING } from "../actions/types";
-const isEmpty = require("is-empty");
+let isEmpty = require("is-empty");
 const initialState = {
   isAuthenticated: false,
   user: {},
   loading: false,
 };
-export default function (state = initialState, action) {
+let reducer = function (state = initialState, action) {
   switch (action.type) {
     case SET_CURRENT_USER:
       return {
@@ -22,3 +22,5 @@ export default function (state = initialState, action) {
       return state;
   }
 }
+
+export default reducer

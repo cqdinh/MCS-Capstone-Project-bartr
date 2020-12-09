@@ -7,7 +7,8 @@ import Image from 'react-bootstrap/Image'
 import Button from 'react-bootstrap/Button'
 import Container from 'react-bootstrap/Container'
 import Form from 'react-bootstrap/Form'
-import ImageUploader from 'react-images-upload';
+import PropTypes from "prop-types";
+import { connect } from "react-redux";
 
 import API from '../../api'
 
@@ -27,11 +28,10 @@ export class AddItem extends Component {
         this.state = {
             productName: '',
             productDesc: '',
-            pictures: [],
-            name: "Parth Shah",
-            address: "3801 Parkview Lane, Irvine, CA - 12312",
-            phoneNo: "21232435665",
-            email: "parth@gmail.com"
+            imageLink: '',
+            name: "",
+            phoneNo: "",
+            email: ""
             
         };
     };
@@ -51,31 +51,38 @@ export class AddItem extends Component {
         console.log(this.state.productName);
         console.log(this.state.productDesc);
         // API Request to add item to user collection and redirect to dashboard
-        console.log(this.state.pictures);
-        alert("Item Added Successfully");
-        this.props.history.push("/dashboard") // Pass in userId prop
-        
+
+        console.log(this.props)
+
+        const userId = this.props.auth.user.id;
+        createItem(this.state.productName, 0.0, userId, this.state.productDesc, this.state.imageLink).then(
+            success => alert("Item Added Successfully")
+        )
+
+        this.props.history.push("/dashboard", {should_reload: true})
     }
 
     render() {
+        const user = this.props.auth.user;
+        console.log(user)
         return (
             <div>
                 <NavBar />
+                <Row noGutters={true} className="d-flex justify-content-center">
+                    <Image src= {window.location.origin + '/assets/noimage.jpg'} roundedCircle alt="Profile Photo" className="profile-img"/>
+                </Row> 
                 <Row noGutters={true}>
                     <Col xs={12} md={5} className="dashboard-profile">
-                        <Row noGutters={true} className="d-flex justify-content-center">
-                            <Image src= {window.location.origin + '/assets/noimage.jpg'} roundedCircle alt="Profile Photo" className="profile-img"/>
-                        </Row> 
                         <Row noGutters={true} className="d-flex justify-content-center user-name">
-                            <h3>{this.state.name}</h3>                        
+                            <h3>{user.display_name}</h3>                        
                         </Row>
                         <Container>
                             
                             <Row noGutters={true} className="user-details">
-                                <h6><b>Phone No:</b> {this.state.phoneNo}</h6>
+                                <h6><b>Phone No:</b> {user.phone}</h6>
                             </Row>
                             <Row noGutters={true} className="user-details">
-                                <h6><b>Email:</b> {this.state.email}</h6>
+                                <h6><b>Email:</b> {user.email}</h6>
                             </Row>
                         </Container>
                         
@@ -106,17 +113,21 @@ export class AddItem extends Component {
                                 placeholder="Product Description" 
                                 required
                                 />
-                            </Form.Group>    
+                            </Form.Group>
 
-                            <ImageUploader
-                                withIcon={true}
-                                buttonText='Choose images'
-                                label='Max file size: 5mb, accepted: jpg, png'
-                                onChange={this.onDrop}
-                                imgExtension={['.jpg', '.png']}
-                                maxFileSize={5242880}                                       
-                                withPreview={true}                        
-                            />                     
+                            <Form.Group controlId="formGridDesc">
+                                <Form.Label>Image Link:</Form.Label>
+                                <Form.Control 
+                                name="imageLink" 
+                                as="textarea" 
+                                rows={1}
+                                value={this.state.imageLink}
+                                onChange={this.handleChange} 
+                                placeholder="Link to Image" 
+                                required
+                                />
+                            </Form.Group>  
+                
     
                             <Button variant="primary" type="submit">Add Item</Button>
                         </Form>
@@ -128,4 +139,10 @@ export class AddItem extends Component {
     }
 }
 
-export default withRouter(AddItem)
+AddItem.propTypes = {
+    auth: PropTypes.object.isRequired,
+  };
+  const mapStateToProps = (state) => ({
+    auth: state.auth,
+  });
+  export default connect(mapStateToProps, {})(AddItem);
