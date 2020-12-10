@@ -32,17 +32,24 @@ function getSentTrades(user_id){
     return API.get("trades/get_sent", { id: user_id });
 }
 
+function getAcceptedTrades(user_id){
+    return API.get("trades/get_accepted", { id: user_id });
+}
+
 class dashboard extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
       myitems: [],
 
+      profile: {},
+
       sent: [],
       received: [],
+      accepted: [],
 
       name: "",
-      phoneNo: "",
+      phone: "",
       email: "",
 
       should_reload: false
@@ -84,7 +91,7 @@ class dashboard extends React.Component {
         async res => {
             let profile = res.data;
             //console.log("profile", profile)
-            this.setState({should_reload: false})
+            this.setState({profile: profile})
             if (profile.items.length !== 0){
                 let items = await getItems(profile.items)
                 this.setState({
@@ -94,9 +101,12 @@ class dashboard extends React.Component {
                 if (profile.curr_trades.length !== 0){
                     let received = await getReceivedTrades(profile._id)
                     let sent = await getSentTrades(profile._id)
+                    let accepted = await getAcceptedTrades(profile._id)
+                    console.log("Accepted Result", accepted.data)
                     this.setState({
                         sent: sent.data,
-                        received: received.data
+                        received: received.data,
+                        accepted: accepted.data
                     })
                 }
             }
@@ -122,23 +132,27 @@ class dashboard extends React.Component {
               <Image src= {window.location.origin + '/assets/noimage.jpg'} roundedCircle alt="Profile Photo" className="profile-img"/>
             </Row>
             <Row noGutters={true} className="d-flex justify-content-center user-name">
-              <h3>{user.display_name}</h3>
+              <h3>{this.state.name}</h3>
             </Row>
             <Container>
               <Row noGutters={true} className="user-details">
                 <h6>
-                  <b>Phone No:</b> {user.phone}
+                  <b>Phone No:</b> {this.state.phone}
                 </h6>
               </Row>
               <Row noGutters={true} className="user-details">
                 <h6>
-                  <b>Email:</b> {user.email}
+                  <b>Email:</b> {this.state.email}
                 </h6>
               </Row>
             </Container>
             <Button variant="primary" type="submit" className="m-3 pl-3 pr-3">
-              <Link to="/dashboard/edit" className="link-button">Edit</Link>
-              
+                <Link to={{
+                    pathname: "/dashboard/edit",
+                    state: {
+                        user: this.state.profile
+                    }
+                }} className="link-button">Edit</Link>
             </Button>
           </Col>
           <Col xs={12} md={7} className="user-collections">
@@ -153,6 +167,8 @@ class dashboard extends React.Component {
             <OfferCardContainer mode="received" trades={this.state.received}/>
             <h3 className="ml-3">Sent Offers:</h3>
             <OfferCardContainer mode="sent" trades={this.state.sent}/>
+            <h3 className="ml-3">Accepted Offers:</h3>
+            <OfferCardContainer mode="accepted" trades={this.state.accepted}/>
           </Col>
         </Row>
         

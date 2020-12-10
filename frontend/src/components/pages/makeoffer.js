@@ -26,6 +26,14 @@ function createTrade(user1_id, user2_id, user1_items, user2_items){
     })
 }
 
+function counterTrade(trade_id, new_items, curr_status){
+    return API.post("trades/counter", {
+        id: trade_id,
+        items: new_items,
+        current_status: curr_status
+    })
+}
+
 export class MakeOffer extends Component {
     constructor(props) {
         super(props);
@@ -33,7 +41,7 @@ export class MakeOffer extends Component {
             currentProduct: {},
             products: [],
 
-            selectedProducts: {}
+            selectedProduct: undefined
         };
     }
 
@@ -43,7 +51,7 @@ export class MakeOffer extends Component {
         this.setState({currentProduct: product});
         console.log(this.props)
 
-        const userId = this.props.location.state.auth.user.id; // Get userId from props
+        const userId = this.props.auth.user.id; // Get userId from props
         //console.log("Dashboard mount")
         //console.log(userId)
 
@@ -62,8 +70,7 @@ export class MakeOffer extends Component {
                     })
 
                     this.setState({
-                        products: items,
-                        selectedProducts: selected_map
+                        products: items
                     })
                 }
             }
@@ -72,37 +79,41 @@ export class MakeOffer extends Component {
 
 
     selectProduct = (productId) => {
-        var state_update = {selectedProducts: {}}
-        state_update.selectedProducts[productId] = !this.state.selectedProducts[productId]
-
-        this.setState(state_update)
+        this.setState({selectedProduct: productId})
     }
 
     handleSubmit = () => {
-        var selected_items = []
-        console.log(this.state.selectedProducts)
 
-        for(const [item_id, is_selected] of Object.entries(this.state.selectedProducts)){
-            if (is_selected){
-                selected_items.push(item_id)
-            }
-        }
-
-        if (selected_items.length === 0){
+        if (!this.state.selectedProduct){
             alert("Please select a product");
             return;
         }
 
-        createTrade(this.props.auth.user.id, this.state.currentProduct.user_id, selected_items, [this.state.currentProduct._id]).then(
-            response => {
-                alert("Offer Made")
-                this.props.history.push("/marketplace");
-            }
-        ).catch(
-            err => {
-                alert("Error while creating offer")
-            }
-        )
+        if (this.props.location.state.is_counter){
+            counterTrade(this.props.location.state.trade._id, [this.state.selectedProduct], this.props.location.state.trade.status).then(
+                response => {
+                    alert("Counter-Offer Made")
+                    this.props.history.push("/marketplace");
+                }
+            ).catch(
+                err => {
+                    alert("Error while creating counter-offer")
+                }
+            )
+        }
+        else{
+            createTrade(this.props.auth.user.id, this.state.currentProduct.user_id, [this.state.selectedProduct], [this.state.currentProduct._id]).then(
+                response => {
+                    alert("Offer Made")
+                    this.props.history.push("/marketplace");
+                }
+            ).catch(
+                err => {
+                    alert("Error while creating offer")
+                }
+            )
+        }
+        
     }
 
     render() {
@@ -112,8 +123,8 @@ export class MakeOffer extends Component {
                 <NavBar />
                 <div className="makeoffer-page">
                     <h3>Make an Offer</h3>
-                    <h4>Select items to make a trade offer</h4>
-                    <ProductCardContainer selected={this.state.selectedProducts} products={this.state.products} auth={this.props.location.state.auth} buttonMode={"select"} cardClick={this.selectProduct} ownedByUser={false}/>
+                    <h4>Select an item to make a trade offer</h4>
+                    <ProductCardContainer selected={this.state.selectedProduct} products={this.state.products} auth={this.props.location.state.auth} buttonMode={"select"} cardClick={this.selectProduct} ownedByUser={false}/>
                     <Button className="makeoffer-but" onClick={this.handleSubmit}>Make Offer</Button>
                 </div>
             </div>

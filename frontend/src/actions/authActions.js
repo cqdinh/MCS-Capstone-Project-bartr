@@ -2,10 +2,13 @@ import axios from "axios";
 import setAuthToken from "../utils/setAuthToken";
 import jwt_decode from "jwt-decode";
 import { GET_ERRORS, SET_CURRENT_USER, USER_LOADING } from "./types";
+
+import API from "../api";
+
 // Register User
 export const registerUser = (userData, history) => (dispatch) => {
-  axios
-    .post("/api/users/register", userData)
+  API
+    .post("users/register", userData)
     .then((res) => history.push("/")) // re-direct to login on successful register
     .catch((err) =>
       dispatch({
@@ -17,8 +20,9 @@ export const registerUser = (userData, history) => (dispatch) => {
 
 // Update User
 export const updateUser = (userData, history) => (dispatch) => {
-  axios
-    .post("/api/users/updateUser", userData)
+    console.log("Update User Called")
+  API
+    .post("users/updateUser", userData)
     .then((res) => history.push("/dashboard")) // re-direct to login on successful register
     .catch((err) =>
       dispatch({
@@ -29,8 +33,8 @@ export const updateUser = (userData, history) => (dispatch) => {
 };
 // Login - get user token
 export const loginUser = (userData) => (dispatch) => {
-  axios
-    .post("/api/users/login", userData)
+  API
+    .post("users/login", userData)
     .then((res) => {
       // Save to localStorage
       // Set token to localStorage

@@ -35,7 +35,7 @@ class ProductCard extends Component {
         console.log(this.props)
         if(this.props.buttonMode === "select") {
             return (
-                <div onClick={this.click} className={"m-3 " + (this.props.selected[product._id] ? "product-card-selected" : "product-card")}>
+                <div onClick={this.click} className={"m-3 " + ((this.props.selected === product._id) ? "product-card-selected" : "product-card")}>
                     <div className="product-img">
                         <Image src={product.images[0]} rounded alt="Product Image" className="" height="100px" width="125px"/>
                     </div>

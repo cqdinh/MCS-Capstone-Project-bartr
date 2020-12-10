@@ -59,7 +59,7 @@ export class AddItem extends Component {
             success => alert("Item Added Successfully")
         )
 
-        this.props.history.push("/dashboard", {should_reload: true})
+        this.props.history.push("/dashboard")
     }
 
     render() {
@@ -87,6 +87,7 @@ export class AddItem extends Component {
                         </Container>
                         
                     </Col>
+                    
                     <Col xs={12} md={7} className="user-collections">  
                         <h3>Add new Item</h3>
                         <Form onSubmit={this.handleSubmit} className="p-3">

@@ -68,6 +68,18 @@ router.get('/get_sent', (req, res) => {
     ).catch(err => res.status(400).json('Error: ' + err));;
 })
 
+router.get('/get_accepted', (req, res) => {
+    console.log(req.query)
+
+    const user_id = mongoose.Types.ObjectId(req.query.id)
+    
+    Trade.find({$or: [{user1_id: user_id, status: "accepted"}, {user2_id: user_id, status: "accepted"}]}).then(
+            trades => {
+                res.json(trades);
+        }
+    ).catch(err => res.status(400).json('Error: ' + err));;
+})
+
 // Start a trade between two users
 /* 
 Input Format: {
@@ -129,5 +141,51 @@ router.post('/delete', async (req, res) => {
         status: "cancelled"
     })
 })
+
+router.post('/accept', async (req, res) => {
+    console.log("Accepting Trade", req.body.id)
+    
+    await Trade.findByIdAndUpdate(req.body.id, {
+        status: "accepted"
+    })
+})
+
+router.post('/complete', (req, res) => {
+    console.log("Completing Trade", req.body.id)
+    
+    Trade.findByIdAndUpdate(req.body.id, {
+        status: "completed"
+    }).then(
+        trade => res.json(trade)
+    ).catch(
+        err => res.status(400).json("Error: " + err)
+    )
+})
+
+router.post('/counter', (req, res) => {
+    console.log("Completing Trade", req.body.id)
+    
+    if (req.body.current_status === "awaiting_user1"){
+        Trade.findByIdAndUpdate(req.body.id, {
+            status: "awaiting_user2",
+            user1_items: req.body.items
+        }).then(
+            trade => res.json(trade)
+        ).catch(
+            err => res.status(400).json("Error: " + err)
+        )
+    }
+    else if (req.body.current_status === "awaiting_user2"){
+        Trade.findByIdAndUpdate(req.body.id, {
+            status: "awaiting_user1",
+            user2_items: req.body.items
+        }).then(
+            trade => res.json(trade)
+        ).catch(
+            err => res.status(400).json("Error: " + err)
+        )
+    }    
+})
+
 
 module.exports = router;

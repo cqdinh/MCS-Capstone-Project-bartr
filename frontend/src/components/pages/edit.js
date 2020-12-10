@@ -42,12 +42,16 @@ export class Edit extends Component {
     if (!this.props.auth.isAuthenticated) {
       this.props.history.push("/");
     }
-    console.log("User");
-    console.log(this.props.auth.user);
+    console.log("edit props", this.props)
+    const user = this.props.location.state.user
     this.setState({
-      display_name: this.props.auth.user.display_name,
-      email: this.props.auth.user.email,
-      phone: this.props.auth.user.phone,
+        display_name: user.display_name,
+        email: user.email,
+        phone: user.phone,
+        coordinates: {
+            longitude: user.location.coordinates[0],
+            latitude: user.location.coordinates[1]
+        }
     });
   }
 
@@ -78,17 +82,22 @@ export class Edit extends Component {
     console.log(this.state.display_name);
 
     const newUser = {
-      display_name: this.state.display_name,
-      email: this.state.email,
-      password: this.state.password,
-      password2: this.state.password2,
-      longitude: this.state.coordinates.longitude,
-      latitude: this.state.coordinates.latitude,
-      phone: this.state.phone,
+        id: this.props.location.state.user._id,
+        display_name: this.state.display_name,
+        email: this.state.email,
+        password: this.state.password,
+        password2: this.state.password2,
+        longitude: this.state.coordinates.longitude,
+        latitude: this.state.coordinates.latitude,
+        phone: this.state.phone,
     };
     console.log(newUser);
     this.props.updateUser(newUser, this.props.history);
   };
+
+  cancel = (event) => {
+    this.props.history.push("/dashboard")
+  }
 
   render() {
     const { errors } = this.state;
@@ -172,7 +181,7 @@ export class Edit extends Component {
               <span style={{ color: "red" }}>{errors.email}</span>
               <Form.Row>
                 <Form.Group as={Col} controlId="formGridPassword">
-                  <Form.Label>Password :</Form.Label>
+                  <Form.Label>New Password :</Form.Label>
                   <Form.Control
                     name="password"
                     type="password"
@@ -187,7 +196,7 @@ export class Edit extends Component {
                 </Form.Group>
 
                 <Form.Group as={Col} controlId="formGridConfirmPassword">
-                  <Form.Label>Confirm Password :</Form.Label>
+                  <Form.Label>Confirm New Password :</Form.Label>
                   <Form.Control
                     name="password2"
                     type="password"
@@ -205,9 +214,18 @@ export class Edit extends Component {
               <br />
               <span style={{ color: "red" }}>{errors.password2}</span>
               <br />
-              <Button variant="primary" type="submit" className="mt-3">
-                Save Changes
-              </Button>
+              <Row noGutters={true}>
+                    <Col>
+                        <Button variant="primary" type="submit" className="mt-3">
+                            Save Changes
+                        </Button>
+                    </Col>
+                    <Col>
+                        <Button variant="danger" onClick={this.cancel} className="mt-3">
+                            Cancel
+                        </Button>
+                    </Col>
+              </Row>
             </Form>
           </Col>
         </Row>
