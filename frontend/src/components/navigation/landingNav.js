@@ -125,7 +125,7 @@ class LandingNav extends React.Component {
           <Form noValidate onSubmit={this.handleSubmit}>
             <Modal.Body>
               <Form.Group controlId="formBasicEmail">
-                <Form.Label>Email address :</Form.Label>
+                <Form.Label className="label-modal">Email address :</Form.Label>
                 <Form.Control
                   name="email"
                   type="email"
@@ -148,7 +148,7 @@ class LandingNav extends React.Component {
               </Form.Group>
 
               <Form.Group controlId="formBasicPassword">
-                <Form.Label>Password :</Form.Label>
+                <Form.Label className="label-modal">Password :</Form.Label>
                 <Form.Control
                   name="password"
                   type="password"

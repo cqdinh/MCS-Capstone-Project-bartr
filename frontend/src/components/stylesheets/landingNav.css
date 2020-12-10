@@ -1,8 +1,8 @@
 @import url('https://fonts.googleapis.com/css2?family=Pacifico&display=swap');
 
 .navigation-bar {    
-    background-color: #65ccb8;
-    border-bottom: 1px solid transparent;    
+    background-color: #222222;
+    border-bottom: 1px solid transparent;  
 }
 
 .navigation-bar-logo {    
@@ -10,7 +10,7 @@
 }
 
 .navtop-link a {
-    color: #182628;
+    color:#f2f2f2;
     text-decoration: none;
     font-size: 22px;
     font-weight: bold;
@@ -18,7 +18,11 @@
 }
 
 .navtop-link a:hover {
-    color: #f2f2f2;
+    color:#74D14C;
     text-decoration: none;
+}
+
+.label-modal.form-label {
+    color: black;
 }
 

@@ -1,7 +1,16 @@
 .signup-page {
     background-color: #f2f2f2;
+    background-image: url('https://i.imgur.com/GKRpIBJ.jpeg');
+    height: 85vh;
+    background-repeat: no-repeat; 
+    background-size: cover;
 }
 
 .form-label {
     font-weight: bold;
+    color: white;
+}
+
+.main-img {
+    margin-top: 10vh;
 }

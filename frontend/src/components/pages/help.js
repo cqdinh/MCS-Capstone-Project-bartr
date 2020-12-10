@@ -6,7 +6,7 @@ function Help() {
     return (
         <div className="help-page">
             <LandingNav />
-            <Container className="landing-page-text">
+            <Container className="landing-page-text-2">
                 <div className="text-desc">
                     <h3>Description :</h3>
                     <p>A web application that allows users to exchange the items they don't want with other users. 

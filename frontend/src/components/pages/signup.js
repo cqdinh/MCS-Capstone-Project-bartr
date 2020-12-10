@@ -122,7 +122,7 @@ class signup extends React.Component {
               className="d-flex justify-content-center mt-2"
             >
             <Image
-              src={window.location.origin + '/assets/noimage.jpg'}
+              src={'https://media.discordapp.net/attachments/714640587353227324/786424991671255061/Screen_Shot_2020-12-09_at_6.52.04_PM.png?width=569&height=565'}
               roundedCircle
               alt="Profile Photo"
               className="main-img"
@@ -134,7 +134,7 @@ class signup extends React.Component {
                 <Button>Upload Picture</Button>
             </Row> */}
           </Col>
-          <Col xs={12} md={7} className="p-3">
+          <Col xs={12} md={6} className="p-3 ml-5">
             <Form noValidate onSubmit={this.handleSubmit}>
               <Form.Group controlId="formGridName">
                 <Form.Label>Name :</Form.Label>
@@ -187,7 +187,7 @@ class signup extends React.Component {
               <span style={{color: "red",}}>
                 {errors.email}
               </span>
-              <Form.Row>
+              <Form.Row className="mt-3">
                 <Form.Group as={Col} controlId="formGridPassword">
                   <Form.Label>Password :</Form.Label>
                   <Form.Control
@@ -226,8 +226,8 @@ class signup extends React.Component {
                 {errors.password2}
               </span>
               <br />
-              <Button variant="primary" type="submit" className="mt-3">
-                Sign Up
+              <Button variant="primary" type="submit" className="">
+                Register
               </Button>
             </Form>
           </Col>
