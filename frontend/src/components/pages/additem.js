@@ -68,21 +68,23 @@ export class AddItem extends Component {
         return (
             <div>
                 <NavBar />
-                <Row noGutters={true} className="d-flex justify-content-center">
-                    <Image src= {window.location.origin + '/assets/noimage.jpg'} roundedCircle alt="Profile Photo" className="profile-img"/>
-                </Row> 
-                <Row noGutters={true}>
+                
+                <Row noGutters={true} style={{height: '90vh'}}>
                     <Col xs={12} md={5} className="dashboard-profile">
+                        <Row noGutters={true} className="d-flex justify-content-center">
+                            <Image src= {'https://media.discordapp.net/attachments/714640587353227324/786424991671255061/Screen_Shot_2020-12-09_at_6.52.04_PM.png?width=569&height=565'}
+                            roundedCircle alt="Profile Photo" className="profile-img"/>
+                        </Row> 
                         <Row noGutters={true} className="d-flex justify-content-center user-name">
                             <h3>{user.display_name}</h3>                        
                         </Row>
                         <Container>
                             
                             <Row noGutters={true} className="user-details">
-                                <h6><b>Phone No:</b> {user.phone}</h6>
+                                <h6><b>Phone No: {user.phone} </b></h6>
                             </Row>
                             <Row noGutters={true} className="user-details">
-                                <h6><b>Email:</b> {user.email}</h6>
+                                <h6><b>Email: {user.email} </b></h6>
                             </Row>
                         </Container>
                         
@@ -92,7 +94,7 @@ export class AddItem extends Component {
                         <h3>Add new Item</h3>
                         <Form onSubmit={this.handleSubmit} className="p-3">
                             <Form.Group controlId="formGridName">
-                                <Form.Label>Product Name :</Form.Label>
+                                <Form.Label className="label-modal">Product Name :</Form.Label>
                                 <Form.Control 
                                 name="productName" 
                                 type="text" 
@@ -104,7 +106,7 @@ export class AddItem extends Component {
                             </Form.Group> 
 
                             <Form.Group controlId="formGridDesc">
-                                <Form.Label>Product Description :</Form.Label>
+                                <Form.Label className="label-modal">Product Description :</Form.Label>
                                 <Form.Control 
                                 name="productDesc" 
                                 as="textarea" 
@@ -117,7 +119,7 @@ export class AddItem extends Component {
                             </Form.Group>
 
                             <Form.Group controlId="formGridDesc">
-                                <Form.Label>Image Link:</Form.Label>
+                                <Form.Label className="label-modal">Image Link:</Form.Label>
                                 <Form.Control 
                                 name="imageLink" 
                                 as="textarea" 

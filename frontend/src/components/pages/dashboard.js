@@ -129,7 +129,8 @@ class dashboard extends React.Component {
         <Row noGutters={true}>
           <Col xs={12} md={5} className="dashboard-profile">
             <Row noGutters={true} className="d-flex justify-content-center">
-              <Image src= {window.location.origin + '/assets/noimage.jpg'} roundedCircle alt="Profile Photo" className="profile-img"/>
+              <Image src= {'https://media.discordapp.net/attachments/714640587353227324/786424991671255061/Screen_Shot_2020-12-09_at_6.52.04_PM.png?width=569&height=565'}
+               roundedCircle alt="Profile Photo" className="profile-img"/>
             </Row>
             <Row noGutters={true} className="d-flex justify-content-center user-name">
               <h3>{this.state.name}</h3>
@@ -137,12 +138,12 @@ class dashboard extends React.Component {
             <Container>
               <Row noGutters={true} className="user-details">
                 <h6>
-                  <b>Phone No:</b> {this.state.phone}
+                  <b>Phone No: {this.state.phone} </b>
                 </h6>
               </Row>
               <Row noGutters={true} className="user-details">
                 <h6>
-                  <b>Email:</b> {this.state.email}
+                  <b>Email: {this.state.email} </b>
                 </h6>
               </Row>
             </Container>

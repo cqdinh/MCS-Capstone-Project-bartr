@@ -108,7 +108,7 @@ export class Edit extends Component {
           <Col xs={12} md={5} className="dashboard-profile">
             <Row noGutters={true} className="d-flex justify-content-center">
               <Image
-                src={window.location.origin + "/assets/noimage.jpg"}
+                src={'https://media.discordapp.net/attachments/714640587353227324/786424991671255061/Screen_Shot_2020-12-09_at_6.52.04_PM.png?width=569&height=565'}
                 roundedCircle
                 alt="Profile Photo"
                 className="profile-img"
@@ -123,12 +123,12 @@ export class Edit extends Component {
             <Container>
               <Row noGutters={true} className="user-details">
                 <h6>
-                  <b>Phone No:</b> {this.state.phone}
+                  <b>Phone No: {this.state.phone} </b>
                 </h6>
               </Row>
               <Row noGutters={true} className="user-details">
                 <h6>
-                  <b>Email:</b> {this.state.email}
+                  <b>Email: {this.state.email} </b>
                 </h6>
               </Row>
             </Container>
@@ -136,7 +136,7 @@ export class Edit extends Component {
           <Col xs={12} md={7} className="p-3">
             <Form noValidate onSubmit={this.handleSubmit}>
               <Form.Group controlId="formGridName">
-                <Form.Label>Name :</Form.Label>
+                <Form.Label className="label-modal">Name :</Form.Label>
                 <Form.Control
                   name="display_name"
                   type="text"
@@ -151,7 +151,7 @@ export class Edit extends Component {
               </Form.Group>
               <span style={{ color: "red" }}>{errors.display_name}</span>
               <Form.Group controlId="formGridPhone">
-                <Form.Label>Phone Number :</Form.Label>
+                <Form.Label className="label-modal">Phone Number :</Form.Label>
                 <Form.Control
                   name="phone"
                   type="tel"
@@ -165,7 +165,7 @@ export class Edit extends Component {
                 <span style={{ color: "red" }}>{errors.phone}</span>
               </Form.Group>
 
-              <Form.Label>Email :</Form.Label>
+              <Form.Label className="label-modal">Email :</Form.Label>
               <Form.Control
                 name="email"
                 type="email"
@@ -179,9 +179,9 @@ export class Edit extends Component {
               />
 
               <span style={{ color: "red" }}>{errors.email}</span>
-              <Form.Row>
+              <Form.Row className="mt-3">
                 <Form.Group as={Col} controlId="formGridPassword">
-                  <Form.Label>New Password :</Form.Label>
+                  <Form.Label className="label-modal">New Password :</Form.Label>
                   <Form.Control
                     name="password"
                     type="password"
@@ -196,7 +196,7 @@ export class Edit extends Component {
                 </Form.Group>
 
                 <Form.Group as={Col} controlId="formGridConfirmPassword">
-                  <Form.Label>Confirm New Password :</Form.Label>
+                  <Form.Label className="label-modal">Confirm New Password :</Form.Label>
                   <Form.Control
                     name="password2"
                     type="password"
@@ -216,12 +216,12 @@ export class Edit extends Component {
               <br />
               <Row noGutters={true}>
                     <Col>
-                        <Button variant="primary" type="submit" className="mt-3">
+                        <Button variant="primary" type="submit" className="">
                             Save Changes
                         </Button>
                     </Col>
                     <Col>
-                        <Button variant="danger" onClick={this.cancel} className="mt-3">
+                        <Button variant="danger" onClick={this.cancel} className="">
                             Cancel
                         </Button>
                     </Col>
