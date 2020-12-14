@@ -123,6 +123,7 @@ class dashboard extends React.Component {
 
   render() {
     const { user } = this.props.auth;
+    console.log("dashboard state", this.props, this.state)
     return (
       <div>
         <NavBar />

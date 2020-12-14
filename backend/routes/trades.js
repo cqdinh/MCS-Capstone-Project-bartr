@@ -4,6 +4,7 @@ const router = express.Router();
 // Load User model
 const User = require("../models/user.model");
 const Trade = require("../models/trade.model");
+const Item = require("../models/item.model");
 
 // Get mongodb connection
 const mongoose = require("mongoose");
@@ -150,16 +151,48 @@ router.post('/accept', async (req, res) => {
     })
 })
 
-router.post('/complete', (req, res) => {
+router.post('/complete', async (req, res) => {
     console.log("Completing Trade", req.body.id)
     
-    Trade.findByIdAndUpdate(req.body.id, {
-        status: "completed"
-    }).then(
-        trade => res.json(trade)
-    ).catch(
-        err => res.status(400).json("Error: " + err)
-    )
+    const session = await mongoose.connection.startSession()
+
+    console.log("Completing Trade:", req.body)
+    
+    session.startTransaction()
+
+    try {
+        let trade = await Trade.findByIdAndUpdate(req.body.id, {
+            status: "completed"
+        })
+
+        assertFalse(trade.length == 0, "Trade Not Created")
+
+        console.log("Trade", trade)
+        console.log("user1", trade.user1_items)
+
+        for(var i = 0; i < trade.user1_items.length; i++){
+            let item = await Item.findByIdAndUpdate(trade.user1_items[i], 
+                {status: "unlisted"})
+            assertFalse(item == null, "Item not Deleted")
+        }
+        for(var i = 0; i < trade.user2_items.length; i++){
+            let item = await Item.findByIdAndUpdate(trade.user2_items[i],
+                {status: "unlisted"})
+            assertFalse(item == null, "Item not Deleted")
+        }
+
+
+        await session.commitTransaction()
+        session.endSession()
+
+        res.json("Trade Completed")
+
+    } catch (err) {
+        console.log(err)
+        await session.abortTransaction()
+        session.endSession()
+        res.status(400).json("Error: " + err)
+    }
 })
 
 router.post('/counter', (req, res) => {

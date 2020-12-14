@@ -80,27 +80,29 @@ class OfferCard extends Component {
                     product_b: items[1],
                     user_is_a: (items[0].user_id === this.props.auth.user.id)
                 })
+
+                if(this.props.mode ==="accepted"){
+                    if(this.state.user_is_a){
+                        getUser(this.state.product_b.user_id).then(
+                            res => {
+                                this.setState({other_user: res.data})
+                            }
+                        )
+                    }
+                    else{
+                        getUser(this.state.product_a.user_id).then(
+                            res => {
+                                this.setState({other_user: res.data})
+                            }
+                        )
+                    }
+                }
             }
         ).catch(
             err => console.log(err)
         )
 
-        if(this.props.mode ==="accepted"){
-            if(this.props.user_is_a){
-                getUser(trade.user2_id).then(
-                    res => {
-                        this.setState({other_user: res.data})
-                    }
-                )
-            }
-            else{
-                getUser(trade.user1_id).then(
-                    res => {
-                        this.setState({other_user: res.data})
-                    }
-                )
-            }
-        }
+        
     }
 
     render() {

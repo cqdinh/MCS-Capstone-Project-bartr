@@ -32,7 +32,7 @@ router.get('/get', (req, res) => {
     console.log("Getting Multiple Items:", req.query)
     const object_ids = req.query.ids.map(x => mongoose.Types.ObjectId(x))
     
-    Item.find({_id: {$in: object_ids}}).then(
+    Item.find({_id: {$in: object_ids}, status: {$ne: "unlisted"}}).then(
             items => {
                 console.log(items)
 
@@ -54,7 +54,15 @@ Item document
 router.get('/get_one', (req, res) => {
     console.log("Getting A Single Item:", req.query)
     Item.findById(req.query.id).then(
-        item => res.json(item)
+        item => {
+            if (item.status !== "unlisted"){
+                res.json(item)
+            }
+            else{
+                res.status(400).json('Item is Unlisted')
+            }
+        }
+        
     ).catch(err => res.status(400).json('Error: ' + err));;
 })
 

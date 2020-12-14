@@ -236,18 +236,18 @@ router.get("/location", (req, res) => {
 
 // Get Items listed by a user
 router.get("/items", (req, res) => {
-  User.findById(req.query.id, { items: 1 })
-    .then((user) => {
-      res.json(user.items);
+    Item.find({user_id: req.query.id, status: {$ne: "unlisted"}}, {_id: 1})
+    .then((items) => {
+      res.json(items.map(item => item._id));
     })
-    .catch();
+    .catch((err) => res.status(400).json("Error: " + err));
 });
 
 // Get Items listed by a set of users
 router.get("/items_batch", async (req, res) => {
   console.log("Getting Items for users:", req.query);
 
-  Item.find({ user_id: { $in: req.query.ids } })
+  Item.find({ user_id: { $in: req.query.ids }, status: {$ne: "unlisted"}})
     .then((items) => res.json(items))
     .catch((err) => res.status(400).json("Error: " + err));
 });
