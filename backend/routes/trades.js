@@ -162,10 +162,11 @@ router.post('/complete', async (req, res) => {
 
     try {
         let trade = await Trade.findByIdAndUpdate(req.body.id, {
-            status: "completed"
+            status: "completed",
+            complete_timestamp: new Date()
         })
 
-        assertFalse(trade.length == 0, "Trade Not Created")
+        assertFalse(trade.length == 0, "Trade Not Completed")
 
         console.log("Trade", trade)
         console.log("user1", trade.user1_items)
