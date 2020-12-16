@@ -43,6 +43,7 @@ router.post("/register", (req, res) => {
         email: req.body.email,
         phone: req.body.phone,
         password: req.body.password,
+        profilePicture: req.body.profilePicture,
       });
       // Hash password before saving in database
       bcrypt.genSalt(10, (err, salt) => {
@@ -102,7 +103,7 @@ router.post("/register", (req, res) => {
 // @desc Update user
 // @access Public
 router.post("/updateUser", (req, res) => {
-    console.log("Updating User", req.body)
+  console.log("Updating User", req.body);
   // Form validation
   const { errors, isValid } = validateRegisterInput(req.body);
   // Check validation
@@ -117,41 +118,46 @@ router.post("/updateUser", (req, res) => {
   var pass = req.body.password;
   //});
 
-  User.findOne({_id: {$ne: mongoose.Types.ObjectId(req.body.id)}, email: req.body.email }).then((user) => {
-      console.log(user)
+  User.findOne({
+    _id: { $ne: mongoose.Types.ObjectId(req.body.id) },
+    email: req.body.email,
+  }).then((user) => {
+    console.log(user);
     if (user) {
       return res.status(400).json({ email: "Email already exists" });
     } else {
-        // Hash password before saving in database
-        bcrypt.genSalt(10, (err, salt) => {
-            bcrypt.hash(req.body.password, salt, (err, hash) => {
-            if (err) {
-                throw err;
+      // Hash password before saving in database
+      bcrypt.genSalt(10, (err, salt) => {
+        bcrypt.hash(req.body.password, salt, (err, hash) => {
+          if (err) {
+            throw err;
+          }
+          pass = hash;
+          User.findByIdAndUpdate(
+            req.body.id,
+            {
+              $set: {
+                display_name: req.body.display_name,
+                email: req.body.email,
+                phone: req.body.phone,
+                password: pass,
+                location: locate,
+                profilePicture: req.body.profilePicture,
+              },
+            },
+            { new: true },
+            (err, user) => {
+              if (err) {
+                console.log(err);
+              }
+              console.log(user);
+              res.json(user);
             }
-            pass = hash;
-            User.findByIdAndUpdate(req.body.id,
-                {
-                $set: {
-                    display_name: req.body.display_name,
-                    email: req.body.email,
-                    phone: req.body.phone,
-                    password: pass,
-                    location: locate,
-                },
-                },
-                { new: true },
-                (err, user) => {
-                if (err) {
-                    console.log(err);
-                }
-                console.log(user);
-                res.json(user);
-                }
-            );
-            });
+          );
         });
+      });
     }
-    })
+  });
 });
 
 // @route POST api/users/login
@@ -182,6 +188,7 @@ router.post("/login", (req, res) => {
           display_name: user.display_name,
           phone: user.phone,
           email: user.email,
+          profilePicture: user.profilePicture,
         };
         // Sign token
         jwt.sign(
@@ -226,13 +233,13 @@ router.get("/name", (req, res) => {
 
 // Get name of a user
 router.get("/location", (req, res) => {
-    console.log("Getting User's Location", req.query.id)
-    User.findById(req.query.id, { location : 1 })
-      .then((user) => {
-        res.json(user.location.coordinates);
-      })
-      .catch((err) => res.status(400).json("Error: " + err));
-  });
+  console.log("Getting User's Location", req.query.id);
+  User.findById(req.query.id, { location: 1 })
+    .then((user) => {
+      res.json(user.location.coordinates);
+    })
+    .catch((err) => res.status(400).json("Error: " + err));
+});
 
 // Get Items listed by a user
 router.get("/items", (req, res) => {

@@ -19,8 +19,8 @@ import API from "../../api";
 class signup extends React.Component {
   constructor(props) {
     super(props);
-    console.log("signup Props")
-    console.log(props)
+    console.log("signup Props");
+    console.log(props);
     this.state = {
       display_name: "",
       email: "",
@@ -28,10 +28,12 @@ class signup extends React.Component {
       password: "",
       password2: "",
       errors: {},
-      coordinates: {// Default to coordinates at UCI
+      coordinates: {
+        // Default to coordinates at UCI
         latitude: 33.64597,
-        longitude: -117.84282
+        longitude: -117.84282,
       },
+      profilePicture: "",
     };
   }
 
@@ -42,17 +44,17 @@ class signup extends React.Component {
     }
 
     if (navigator.geolocation) {
-        //console.log("Inside navigator");
-        navigator.geolocation.getCurrentPosition((position) => {
+      //console.log("Inside navigator");
+      navigator.geolocation.getCurrentPosition((position) => {
         //console.log(position);
         // console.log("Here");
         // console.log(newCooords.latitude);
         // console.log(newCooords.longitude);
-        this.setState({ 
-            coordinates: {
-                latitude: position.coords.latitude,
-                longitude: position.coords.longitude
-            }
+        this.setState({
+          coordinates: {
+            latitude: position.coords.latitude,
+            longitude: position.coords.longitude,
+          },
         });
       });
     } else {
@@ -89,6 +91,7 @@ class signup extends React.Component {
     console.log(this.state.password);
     console.log(this.state.password2);
     console.log(this.state.display_name);
+    console.log(this.state.profilePicture);
 
     const newUser = {
       display_name: this.state.display_name,
@@ -98,6 +101,7 @@ class signup extends React.Component {
       longitude: this.state.coordinates.longitude,
       latitude: this.state.coordinates.latitude,
       phone: this.state.phone,
+      profilePicture: this.state.profilePicture,
     };
     console.log(newUser);
     this.props.registerUser(newUser, this.props.history);
@@ -121,13 +125,15 @@ class signup extends React.Component {
               noGutters={true}
               className="d-flex justify-content-center mt-2"
             >
-            <Image
-              src={'https://media.discordapp.net/attachments/714640587353227324/786424991671255061/Screen_Shot_2020-12-09_at_6.52.04_PM.png?width=569&height=565'}
-              roundedCircle
-              alt="Profile Photo"
-              className="main-img"
-              height="300px"
-            />
+              <Image
+                src={
+                  "https://media.discordapp.net/attachments/714640587353227324/786424991671255061/Screen_Shot_2020-12-09_at_6.52.04_PM.png?width=569&height=565"
+                }
+                roundedCircle
+                alt="Profile Photo"
+                className="main-img"
+                height="300px"
+              />
             </Row>
 
             {/* <Row noGutters={true} className="d-flex justify-content-center mt-5">
@@ -150,10 +156,8 @@ class signup extends React.Component {
                   required
                 />
               </Form.Group>
-              
-              <span style={{color: "red",}}>
-                {errors.display_name}
-              </span>
+
+              <span style={{ color: "red" }}>{errors.display_name}</span>
               <Form.Group controlId="formGridPhone">
                 <Form.Label>Phone Number :</Form.Label>
                 <Form.Control
@@ -166,9 +170,7 @@ class signup extends React.Component {
                     invalid: errors.phone,
                   })}
                 />
-                <span style={{color: "red",}}>
-                  {errors.phone}
-                </span>
+                <span style={{ color: "red" }}>{errors.phone}</span>
               </Form.Group>
 
               <Form.Label>Email :</Form.Label>
@@ -183,10 +185,22 @@ class signup extends React.Component {
                 })}
                 required
               />
+              <span style={{ color: "red" }}>{errors.email}</span>
+              <br />
+              <Form.Label>Profile Picture :</Form.Label>
+              <Form.Control
+                name="profilePicture"
+                type="text"
+                value={this.state.profilePicture}
+                onChange={this.handleChange}
+                placeholder="Enter the link for your profile picture"
+                className={classnames("", {
+                  invalid: errors.profilePicture,
+                })}
+                required
+              />
+              <span style={{ color: "red" }}>{errors.profilePicture}</span>
 
-              <span style={{color: "red",}}>
-                {errors.email}
-              </span>
               <Form.Row className="mt-3">
                 <Form.Group as={Col} controlId="formGridPassword">
                   <Form.Label>Password :</Form.Label>
@@ -218,14 +232,12 @@ class signup extends React.Component {
                   />
                 </Form.Group>
               </Form.Row>
-              <span style={{color: "red",}}>
-                {errors.password}
-              </span>
+
+              <span style={{ color: "red" }}>{errors.password}</span>
               <br />
-              <span style={{color: "red",}}>
-                {errors.password2}
-              </span>
+              <span style={{ color: "red" }}>{errors.password2}</span>
               <br />
+
               <Button variant="primary" type="submit" className="">
                 Register
               </Button>

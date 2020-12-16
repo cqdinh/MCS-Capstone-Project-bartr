@@ -40,6 +40,10 @@ const userSchema = new mongoose.Schema({
   items: [mongoose.ObjectId],
   curr_trades: [mongoose.ObjectId],
   past_trades: [mongoose.ObjectId],
+  profilePicture: {
+    type: String,
+    required: true,
+  },
 });
 
 const User = mongoose.model("User", userSchema);
