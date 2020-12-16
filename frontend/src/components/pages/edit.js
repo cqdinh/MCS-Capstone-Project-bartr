@@ -26,6 +26,7 @@ export class Edit extends Component {
       phone: "",
       password: "",
       password2: "",
+      profilePicture: "",
       errors: {},
       coordinates: {
         latitude: 34,
@@ -42,16 +43,17 @@ export class Edit extends Component {
     if (!this.props.auth.isAuthenticated) {
       this.props.history.push("/");
     }
-    console.log("edit props", this.props)
-    const user = this.props.location.state.user
+    console.log("edit props", this.props);
+    const user = this.props.location.state.user;
     this.setState({
-        display_name: user.display_name,
-        email: user.email,
-        phone: user.phone,
-        coordinates: {
-            longitude: user.location.coordinates[0],
-            latitude: user.location.coordinates[1]
-        }
+      display_name: user.display_name,
+      email: user.email,
+      phone: user.phone,
+      profilePicture: user.profilePicture,
+      coordinates: {
+        longitude: user.location.coordinates[0],
+        latitude: user.location.coordinates[1],
+      },
     });
   }
 
@@ -82,22 +84,23 @@ export class Edit extends Component {
     console.log(this.state.display_name);
 
     const newUser = {
-        id: this.props.location.state.user._id,
-        display_name: this.state.display_name,
-        email: this.state.email,
-        password: this.state.password,
-        password2: this.state.password2,
-        longitude: this.state.coordinates.longitude,
-        latitude: this.state.coordinates.latitude,
-        phone: this.state.phone,
+      id: this.props.location.state.user._id,
+      display_name: this.state.display_name,
+      email: this.state.email,
+      password: this.state.password,
+      password2: this.state.password2,
+      longitude: this.state.coordinates.longitude,
+      latitude: this.state.coordinates.latitude,
+      phone: this.state.phone,
+      profilePicture: this.state.profilePicture,
     };
     console.log(newUser);
     this.props.updateUser(newUser, this.props.history);
   };
 
   cancel = (event) => {
-    this.props.history.push("/dashboard")
-  }
+    this.props.history.push("/dashboard");
+  };
 
   render() {
     const { errors } = this.state;
@@ -108,7 +111,7 @@ export class Edit extends Component {
           <Col xs={12} md={5} className="dashboard-profile">
             <Row noGutters={true} className="d-flex justify-content-center">
               <Image
-                src={'https://media.discordapp.net/attachments/714640587353227324/786424991671255061/Screen_Shot_2020-12-09_at_6.52.04_PM.png?width=569&height=565'}
+                src={this.state.profilePicture}
                 roundedCircle
                 alt="Profile Photo"
                 className="profile-img"
@@ -179,9 +182,24 @@ export class Edit extends Component {
               />
 
               <span style={{ color: "red" }}>{errors.email}</span>
+              <Form.Label>Profile Picture :</Form.Label>
+              <Form.Control
+                name="profilePicture"
+                type="text"
+                value={this.state.profilePicture}
+                onChange={this.handleChange}
+                placeholder="Enter the link for your profile picture"
+                className={classnames("", {
+                  invalid: errors.profilePicture,
+                })}
+                required
+              />
+              <span style={{ color: "red" }}>{errors.profilePicture}</span>
               <Form.Row className="mt-3">
                 <Form.Group as={Col} controlId="formGridPassword">
-                  <Form.Label className="label-modal">New Password :</Form.Label>
+                  <Form.Label className="label-modal">
+                    New Password :
+                  </Form.Label>
                   <Form.Control
                     name="password"
                     type="password"
@@ -196,7 +214,9 @@ export class Edit extends Component {
                 </Form.Group>
 
                 <Form.Group as={Col} controlId="formGridConfirmPassword">
-                  <Form.Label className="label-modal">Confirm New Password :</Form.Label>
+                  <Form.Label className="label-modal">
+                    Confirm New Password :
+                  </Form.Label>
                   <Form.Control
                     name="password2"
                     type="password"
@@ -215,16 +235,16 @@ export class Edit extends Component {
               <span style={{ color: "red" }}>{errors.password2}</span>
               <br />
               <Row noGutters={true}>
-                    <Col>
-                        <Button variant="primary" type="submit" className="">
-                            Save Changes
-                        </Button>
-                    </Col>
-                    <Col>
-                        <Button variant="danger" onClick={this.cancel} className="">
-                            Cancel
-                        </Button>
-                    </Col>
+                <Col>
+                  <Button variant="primary" type="submit" className="">
+                    Save Changes
+                  </Button>
+                </Col>
+                <Col>
+                  <Button variant="danger" onClick={this.cancel} className="">
+                    Cancel
+                  </Button>
+                </Col>
               </Row>
             </Form>
           </Col>

@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { Link, withRouter} from "react-router-dom";
+import { Link, withRouter } from "react-router-dom";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import Image from "react-bootstrap/Image";
@@ -7,7 +7,7 @@ import NavBar from "../navigation/navbar";
 import Button from "react-bootstrap/Button";
 import Container from "react-bootstrap/Container";
 import ProductCardContainer from "../product/productcardcontainer";
-import OfferCardContainer from '../product/offercardcontainer'
+import OfferCardContainer from "../product/offercardcontainer";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import { logoutUser } from "../../actions/authActions";
@@ -17,23 +17,23 @@ import "../stylesheets/dashboard.css";
 import API from "../../api";
 
 function getUser(user_id) {
-    return API.get("users/profile", { id: user_id });
+  return API.get("users/profile", { id: user_id });
 }
 
-function getItems(item_ids){
-    return API.get("items/get", { ids: item_ids });
+function getItems(item_ids) {
+  return API.get("items/get", { ids: item_ids });
 }
 
-function getReceivedTrades(user_id){
-    return API.get("trades/get_received", { id: user_id });
+function getReceivedTrades(user_id) {
+  return API.get("trades/get_received", { id: user_id });
 }
 
-function getSentTrades(user_id){
-    return API.get("trades/get_sent", { id: user_id });
+function getSentTrades(user_id) {
+  return API.get("trades/get_sent", { id: user_id });
 }
 
-function getAcceptedTrades(user_id){
-    return API.get("trades/get_accepted", { id: user_id });
+function getAcceptedTrades(user_id) {
+  return API.get("trades/get_accepted", { id: user_id });
 }
 
 class dashboard extends React.Component {
@@ -51,8 +51,9 @@ class dashboard extends React.Component {
       name: "",
       phone: "",
       email: "",
+      profilePicture: "",
 
-      should_reload: false
+      should_reload: false,
     };
   }
 
@@ -71,55 +72,51 @@ class dashboard extends React.Component {
     //console.log("User")
     //console.log(this.props.auth);
 
-    
     //console.log("Dashboard mount")
     //console.log(userId)
-    this.load_data()
+    this.load_data();
 
     // Update every 5 seconds to include added items
-    this.interval = setInterval(this.load_data.bind(this), 5000)
+    this.interval = setInterval(this.load_data.bind(this), 5000);
   }
 
-  componentWillUnmount(){
-      clearInterval(this.interval)
+  componentWillUnmount() {
+    clearInterval(this.interval);
   }
 
-  load_data(){
-
+  load_data() {
     const userId = this.props.auth.user.id; // Get userId from props
-    getUser(userId).then(
-        async res => {
-            let profile = res.data;
-            //console.log("profile", profile)
-            this.setState({profile: profile})
-            if (profile.items.length !== 0){
-                let items = await getItems(profile.items)
-                this.setState({
-                    myitems: items.data
-                })
+    getUser(userId).then(async (res) => {
+      let profile = res.data;
+      //console.log("profile", profile)
+      this.setState({ profile: profile });
+      if (profile.items.length !== 0) {
+        let items = await getItems(profile.items);
+        this.setState({
+          myitems: items.data,
+        });
 
-                if (profile.curr_trades.length !== 0){
-                    let received = await getReceivedTrades(profile._id)
-                    let sent = await getSentTrades(profile._id)
-                    let accepted = await getAcceptedTrades(profile._id)
-                    console.log("Accepted Result", accepted.data)
-                    this.setState({
-                        sent: sent.data,
-                        received: received.data,
-                        accepted: accepted.data
-                    })
-                }
-            }
-            
-            this.setState({
-                name: profile.display_name,
-                phone: profile.phone,
-                email: profile.email
-            })
+        if (profile.curr_trades.length !== 0) {
+          let received = await getReceivedTrades(profile._id);
+          let sent = await getSentTrades(profile._id);
+          let accepted = await getAcceptedTrades(profile._id);
+          console.log("Accepted Result", accepted.data);
+          this.setState({
+            sent: sent.data,
+            received: received.data,
+            accepted: accepted.data,
+          });
         }
-    )
-  }
+      }
 
+      this.setState({
+        name: profile.display_name,
+        phone: profile.phone,
+        email: profile.email,
+        profilePicture: profile.profilePicture,
+      });
+    });
+  }
 
   render() {
     const { user } = this.props.auth;
@@ -130,10 +127,17 @@ class dashboard extends React.Component {
         <Row noGutters={true}>
           <Col xs={12} md={5} className="dashboard-profile">
             <Row noGutters={true} className="d-flex justify-content-center">
-              <Image src= {'https://media.discordapp.net/attachments/714640587353227324/786424991671255061/Screen_Shot_2020-12-09_at_6.52.04_PM.png?width=569&height=565'}
-               roundedCircle alt="Profile Photo" className="profile-img"/>
+              <Image
+                src={this.state.profilePicture}
+                roundedCircle
+                alt="Profile Photo"
+                className="profile-img"
+              />
             </Row>
-            <Row noGutters={true} className="d-flex justify-content-center user-name">
+            <Row
+              noGutters={true}
+              className="d-flex justify-content-center user-name"
+            >
               <h3>{this.state.name}</h3>
             </Row>
             <Container>
@@ -149,31 +153,41 @@ class dashboard extends React.Component {
               </Row>
             </Container>
             <Button variant="primary" type="submit" className="m-3 pl-3 pr-3">
-                <Link to={{
-                    pathname: "/dashboard/edit",
-                    state: {
-                        user: this.state.profile
-                    }
-                }} className="link-button">Edit</Link>
+              <Link
+                to={{
+                  pathname: "/dashboard/edit",
+                  state: {
+                    user: this.state.profile,
+                  },
+                }}
+                className="link-button"
+              >
+                Edit
+              </Link>
             </Button>
           </Col>
           <Col xs={12} md={7} className="user-collections">
             <Row noGutters={true} className="d-flex justify-content-end m-3">
               <Button variant="primary" type="submit" className="">
-                  <Link to="/additem" className="link-button">Add a New Item</Link>
+                <Link to="/additem" className="link-button">
+                  Add a New Item
+                </Link>
               </Button>
             </Row>
-            <h3 className="ml-3">My Items:</h3>                  
-            <ProductCardContainer products={this.state.myitems} buttonMode={"preview"} ownedByUser={true}/>
+            <h3 className="ml-3">My Items:</h3>
+            <ProductCardContainer
+              products={this.state.myitems}
+              buttonMode={"preview"}
+              ownedByUser={true}
+            />
             <h3 className="ml-3">Received Offers:</h3>
-            <OfferCardContainer mode="received" trades={this.state.received}/>
+            <OfferCardContainer mode="received" trades={this.state.received} />
             <h3 className="ml-3">Sent Offers:</h3>
-            <OfferCardContainer mode="sent" trades={this.state.sent}/>
+            <OfferCardContainer mode="sent" trades={this.state.sent} />
             <h3 className="ml-3">Accepted Offers:</h3>
-            <OfferCardContainer mode="accepted" trades={this.state.accepted}/>
+            <OfferCardContainer mode="accepted" trades={this.state.accepted} />
           </Col>
         </Row>
-        
       </div>
     );
   }
