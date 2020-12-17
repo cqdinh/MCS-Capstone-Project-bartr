@@ -93,7 +93,7 @@ export class MakeOffer extends Component {
             counterTrade(this.props.location.state.trade._id, [this.state.selectedProduct], this.props.location.state.trade.status).then(
                 response => {
                     alert("Counter-Offer Made")
-                    this.props.history.push("/marketplace");
+                    this.props.history.push("/dashboard");
                 }
             ).catch(
                 err => {
@@ -105,7 +105,7 @@ export class MakeOffer extends Component {
             createTrade(this.props.auth.user.id, this.state.currentProduct.user_id, [this.state.selectedProduct], [this.state.currentProduct._id]).then(
                 response => {
                     alert("Offer Made")
-                    this.props.history.push("/marketplace");
+                    this.props.history.push("/dashboard");
                 }
             ).catch(
                 err => {

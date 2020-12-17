@@ -21,6 +21,8 @@ function deleteTrade(trade_id){
 }
 
 function acceptTrade(trade_id){
+    console.log("Accept Trade")
+    console.trace()
     return API.post("trades/accept", {id: trade_id})
 }
 

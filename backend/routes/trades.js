@@ -146,7 +146,7 @@ router.post('/delete', async (req, res) => {
 router.post('/accept', async (req, res) => {
     console.log("Accepting Trade", req.body.id)
     
-    await Trade.findByIdAndUpdate(req.body.id, {
+    await Trade.findOneAndUpdate({_id: mongoose.Types.ObjectId(req.body.id), status: {$ne: "completed"}}, {
         status: "accepted"
     })
 })
@@ -197,7 +197,7 @@ router.post('/complete', async (req, res) => {
 })
 
 router.post('/counter', (req, res) => {
-    console.log("Completing Trade", req.body.id)
+    console.log("Countering Trade", req.body.id)
     
     if (req.body.current_status === "awaiting_user1"){
         Trade.findByIdAndUpdate(req.body.id, {

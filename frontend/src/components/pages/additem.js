@@ -32,7 +32,6 @@ export class AddItem extends Component {
             name: "",
             phoneNo: "",
             email: ""
-            
         };
     };
 
@@ -72,7 +71,7 @@ export class AddItem extends Component {
                 <Row noGutters={true} style={{height: '90vh'}}>
                     <Col xs={12} md={5} className="dashboard-profile">
                         <Row noGutters={true} className="d-flex justify-content-center">
-                            <Image src= {'https://media.discordapp.net/attachments/714640587353227324/786424991671255061/Screen_Shot_2020-12-09_at_6.52.04_PM.png?width=569&height=565'}
+                            <Image src= {this.props.location.state.profilePicture}
                             roundedCircle alt="Profile Photo" className="profile-img"/>
                         </Row> 
                         <Row noGutters={true} className="d-flex justify-content-center user-name">

@@ -169,7 +169,12 @@ class dashboard extends React.Component {
           <Col xs={12} md={7} className="user-collections">
             <Row noGutters={true} className="d-flex justify-content-end m-3">
               <Button variant="primary" type="submit" className="">
-                <Link to="/additem" className="link-button">
+                <Link to={{
+                    pathname: "/additem",
+                    state: {
+                        profilePicture: this.state.profilePicture
+                    }
+                }} className="link-button">
                   Add a New Item
                 </Link>
               </Button>
